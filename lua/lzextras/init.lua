@@ -19,9 +19,9 @@
 ---@diagnostic disable-next-line
 local lzextras = {}
 setmetatable(lzextras, {
-    __index = function(_, k)
-        lzextras[k] = require("lzextras.src." .. k)
-        return lzextras[k]
+    __index = function(t, k)
+        t[k] = require("lzextras.src." .. k)
+        return t[k]
     end,
 })
 return lzextras
