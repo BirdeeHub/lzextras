@@ -20,9 +20,9 @@
 local lzextras = {}
 setmetatable(lzextras, {
     __index = function(t, k)
-        local mod = require("lzextras.src." .. k) -- Load the module
-        rawset(t, k, mod) -- Store it directly in the table
-        return mod -- Return the loaded module
+        local mod = require("lzextras.src." .. k)
+        rawset(t, k, mod)
+        return mod
     end,
 })
 return lzextras
