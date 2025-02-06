@@ -3,6 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    lze = {
+      url = "github:BirdeeHub/lze";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+      inputs.neorocks.follows = "neorocks";
+      inputs.gen-luarc.follows = "gen-luarc";
+    };
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
@@ -22,6 +30,7 @@
     pre-commit-hooks,
     neorocks,
     gen-luarc,
+    lze,
     ...
   }: let
     name = "lzextras";
@@ -54,6 +63,7 @@
           overlays = [
             gen-luarc.overlays.default
             neorocks.overlays.default
+            lze.overlays.default
             ci-overlay
             pkg-overlay
           ];
