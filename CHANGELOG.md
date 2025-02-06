@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/BirdeeHub/lzextras/compare/v0.1.1...v0.1.2) (2025-02-06)
+
+
+### Bug Fixes
+
+* **caching:** fix lazy init caching ([779c940](https://github.com/BirdeeHub/lzextras/commit/779c940b796156931c9c1c44c74b30272815b5e5))
+
 ## [0.1.1](https://github.com/BirdeeHub/lzextras/compare/v0.1.0...v0.1.1) (2025-02-06)
 
 
