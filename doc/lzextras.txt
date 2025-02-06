@@ -3,7 +3,7 @@ lzextras.Merge                                                  *lzextras.Merge*
     Fields: ~
         {handler}  (lze.Handler)  merge handler must be registered
                                   before all other handlers with modify hooks
-        {trigger}  (fun())
+        {trigger}  (fun())        add all the collected merged specs to lze
 
 
 lzextras.Keymap                                                *lzextras.Keymap*

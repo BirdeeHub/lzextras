@@ -2,6 +2,7 @@
 ---merge handler must be registered
 ---before all other handlers with modify hooks
 ---@field handler lze.Handler
+---add all the collected merged specs to lze
 ---@field trigger fun()
 
 ---@class lzextras.Keymap
