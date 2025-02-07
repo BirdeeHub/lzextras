@@ -6,7 +6,7 @@ return function(spec)
     ---@diagnostic disable-next-line: undefined-field
     spec = type(spec.name or spec[1]) == "string" and { spec } or spec
 
-    if #spec == 0 then
+    if type(spec) == "table" and #spec == 0 then
         vim.notify("no spec provided, exiting", vim.log.levels.ERROR, { title = "lzextras.keymap.set" })
         return
     end
@@ -16,8 +16,10 @@ return function(spec)
     for _, s in ipairs(spec) do
         ---@diagnostic disable-next-line: undefined-field
         table.insert(to_load, s.name or s[1])
-        ---@diagnostic disable-next-line: undefined-field
-        table.insert(funclist, s.lsp or function(_) end)
+        if s.lsp then
+            ---@diagnostic disable-next-line: undefined-field
+            table.insert(funclist, s.lsp)
+        end
         ---@diagnostic disable-next-line: inject-field
         s.lsp = nil
     end
