@@ -1,8 +1,12 @@
 ---@class lzextras.LspPlugin: lze.Plugin
 ---@field lsp? any
 
----@param spec lze.Spec
+---@param spec string|lze.Spec
 return function(spec)
+    ---parse with only 1 argument will not call handler is_lazy or run_modify
+    ---So this is performant to call without much duplicated work.
+    ---It will also filter out disabled plugins for us
+    ---@diagnostic disable-next-line: param-type-mismatch
     spec = require("lze.c.parse")(type(spec) == "string" and { import = spec } or spec)
     if spec == {} then
         vim.notify("no spec provided, exiting", vim.log.levels.ERROR, { title = "lzextras.keymap.set" })
@@ -53,7 +57,10 @@ return function(spec)
                 ---@diagnostic disable-next-line: param-type-mismatch
                 plugin.ft = vim.list_extend(newftlist or {}, oldftlist or {})
             else
-                plugin.ft = require("lspconfig")[plugin.name].config_def.default_config.filetypes
+                local ok, lspconfig = pcall(require, "lspconfig")
+                if ok then
+                    plugin.ft = lspconfig[plugin.name].config_def.default_config.filetypes
+                end
             end
             return plugin
         end,
