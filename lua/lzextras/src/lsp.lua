@@ -1,40 +1,59 @@
 ---@class lzextras.LspPlugin: lze.Plugin
 ---@field lsp? any
 
--- TODO: this sux
--- this will have to change
-return function(auto_ft, default_args)
+---@param spec lze.PluginSpec|lze.PluginSpec[]
+return function(spec)
+    ---@diagnostic disable-next-line: undefined-field
+    spec = type(spec.name or spec[1]) == "string" and { spec } or spec
+
+    if #spec == 0 then
+        vim.notify("no spec provided, exiting", vim.log.levels.ERROR, { title = "lzextras.keymap.set" })
+        return
+    end
+
+    local to_load = {}
+    local funclist = {}
+    for _, s in ipairs(spec) do
+        ---@diagnostic disable-next-line: undefined-field
+        table.insert(to_load, s.name or s[1])
+        ---@diagnostic disable-next-line: undefined-field
+        table.insert(funclist, s.lsp or function(_) end)
+        ---@diagnostic disable-next-line: inject-field
+        s.lsp = nil
+    end
+
+    require("lze").load(spec)
+
     ---@type lze.Handler
     local handler = {
         spec_field = "lsp",
         ---@param plugin lzextras.LspPlugin
         modify = function(plugin)
             local lspfield = plugin.lsp
-            if not lspfield then
-                return plugin
-            end
             if type(lspfield) ~= "table" then
-                vim.notify(
-                    'lsp spec for "' .. plugin.name .. '" failed, lsp field must be a table',
-                    vim.log.levels.ERROR,
-                    { title = "lzextras.lsp" }
-                )
                 return plugin
             end
-            lspfield = vim.tbl_deep_extend("force", default_args, lspfield)
-            plugin.load = function(name)
-                require("lspconfig")[name].setup(lspfield)
+            plugin.load = function()
+                require("lze").trigger_load(to_load)
+            end
+            local oldafter = plugin.after or function(_) end
+            plugin.after = function(p)
+                for _, f in ipairs(funclist) do
+                    f(p)
+                end
+                oldafter(p)
             end
             local newftlist = type(lspfield.filetypes) == "string" and { lspfield.filetypes }
-                or lspfield.filetypes
-                or {}
-            local oldftlist = type(plugin.ft) == "string" and { plugin.ft } or plugin.ft or {}
-            ---@diagnostic disable-next-line: param-type-mismatch
-            local usrft = vim.list_extend(newftlist, oldftlist)
-            if auto_ft then
-                plugin.ft = vim.list_extend(usrft, require("lspconfig")[plugin.name].filetypes)
+                or type(lspfield.filetypes) == "table" and lspfield.filetypes
+                or nil
+            local oldftlist = type(plugin.ft) == "string" and { plugin.ft }
+                or type(plugin.ft) == "table" and plugin.ft
+                or nil
+            if newftlist or oldftlist then
+                ---@diagnostic disable-next-line: param-type-mismatch
+                plugin.ft = vim.list_extend(newftlist or {}, oldftlist or {})
             else
-                plugin.ft = usrft
+                plugin.ft = require("lspconfig")[plugin.name].filetypes
             end
             return plugin
         end,
