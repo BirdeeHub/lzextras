@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/BirdeeHub/lzextras/compare/v0.1.3...v0.1.4) (2025-02-07)
+
+
+### Bug Fixes
+
+* **lsp:** better design, needs lze update to support import specs for base specs ([1f846d7](https://github.com/BirdeeHub/lzextras/commit/1f846d7274ee996ea4ed17b04ef48e18b550a006))
+
 ## [0.1.3](https://github.com/BirdeeHub/lzextras/compare/v0.1.2...v0.1.3) (2025-02-06)
 
 
