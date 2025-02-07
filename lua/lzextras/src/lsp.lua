@@ -1,28 +1,22 @@
 ---@class lzextras.LspPlugin: lze.Plugin
 ---@field lsp? any
 
----@param spec lze.PluginSpec|lze.PluginSpec[]
+---@param spec lze.Spec
 return function(spec)
-    --TODO: replace with:
-    -- spec = lze.c.parse(type(spec) == "string" and { import = spec } or spec)
-    ---@diagnostic disable-next-line: undefined-field
-    spec = type(spec.name or spec[1]) == "string" and { spec } or spec
-
-    if type(spec) == "table" and #spec == 0 then
+    spec = require("lze.c.parse")(type(spec) == "string" and { import = spec } or spec)
+    if spec == {} then
         vim.notify("no spec provided, exiting", vim.log.levels.ERROR, { title = "lzextras.keymap.set" })
         return
     end
 
     local to_load = {}
     local funclist = {}
+    ---@param s lzextras.LspPlugin
     for _, s in ipairs(spec) do
-        ---@diagnostic disable-next-line: undefined-field
-        table.insert(to_load, s.name or s[1])
+        table.insert(to_load, s.name)
         if s.lsp then
-            ---@diagnostic disable-next-line: undefined-field
             table.insert(funclist, s.lsp)
         end
-        ---@diagnostic disable-next-line: inject-field
         s.lsp = nil
     end
 
@@ -34,7 +28,7 @@ return function(spec)
         ---@param plugin lzextras.LspPlugin
         modify = function(plugin)
             local lspfield = plugin.lsp
-            if type(lspfield) ~= "table" then
+            if not lspfield then
                 return plugin
             end
             local oldload = plugin.load or function(_) end
