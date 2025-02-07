@@ -3,6 +3,8 @@
 
 ---@param spec lze.PluginSpec|lze.PluginSpec[]
 return function(spec)
+    --TODO: replace with:
+    -- spec = lze.c.parse(type(spec) == "string" and { import = spec } or spec)
     ---@diagnostic disable-next-line: undefined-field
     spec = type(spec.name or spec[1]) == "string" and { spec } or spec
 
@@ -35,8 +37,10 @@ return function(spec)
             if type(lspfield) ~= "table" then
                 return plugin
             end
-            plugin.load = function()
+            local oldload = plugin.load or function(_) end
+            plugin.load = function(name)
                 require("lze").trigger_load(to_load)
+                oldload(name)
             end
             local oldafter = plugin.after or function(_) end
             plugin.after = function(p)
