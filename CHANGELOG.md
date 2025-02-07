@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/BirdeeHub/lzextras/compare/v0.1.4...v0.1.5) (2025-02-07)
+
+
+### Bug Fixes
+
+* **lsp:** validation ([28a8f6b](https://github.com/BirdeeHub/lzextras/commit/28a8f6b30d709054d92206e6094d32502d06a40b))
+
 ## [0.1.4](https://github.com/BirdeeHub/lzextras/compare/v0.1.3...v0.1.4) (2025-02-07)
 
 
