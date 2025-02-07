@@ -53,7 +53,7 @@ return function(spec)
                 ---@diagnostic disable-next-line: param-type-mismatch
                 plugin.ft = vim.list_extend(newftlist or {}, oldftlist or {})
             else
-                plugin.ft = require("lspconfig")[plugin.name].filetypes
+                plugin.ft = require("lspconfig")[plugin.name].config_def.default_config.filetypes
             end
             return plugin
         end,
