@@ -27,7 +27,7 @@ return function(spec)
     require("lze").load(spec)
 
     ---@type lze.Handler
-    local handler = {
+    return {
         spec_field = "lsp",
         ---@param plugin lzextras.LspPlugin
         modify = function(plugin)
@@ -65,5 +65,4 @@ return function(spec)
             return plugin
         end,
     }
-    return handler
 end
