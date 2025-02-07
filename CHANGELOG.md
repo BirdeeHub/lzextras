@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/BirdeeHub/lzextras/compare/v0.1.5...v0.1.6) (2025-02-07)
+
+
+### Bug Fixes
+
+* **lsp:** I think the lsp one works? unclear ([93147e7](https://github.com/BirdeeHub/lzextras/commit/93147e76efc33f83d5c6f33043ace33ba4d50a29))
+
 ## [0.1.5](https://github.com/BirdeeHub/lzextras/compare/v0.1.4...v0.1.5) (2025-02-07)
 
 
