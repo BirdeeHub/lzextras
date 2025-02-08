@@ -5,6 +5,9 @@
 ---add all the collected merged specs to lze
 ---@field trigger fun()
 
+---@class lzextras.LspPlugin: lze.Plugin
+---@field lsp? any
+
 ---@class lzextras.Keymap
 ---@field set fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts)
 

@@ -1,6 +1,3 @@
----@class lzextras.LspPlugin: lze.Plugin
----@field lsp? any
-
 ---@class lzextras.LspHandler: lze.Handler
 ---@field states table<string, fun(plugin: lzextras.LspPlugin)>
 
@@ -15,6 +12,7 @@ return {
             return plugin
         end
         if type(lspfield) == "function" then
+            ---Deal with disabling so that it stays "private"
             ---@diagnostic disable-next-line: undefined-field
             require("lzextras").lsp.states[plugin.name] = lspfield
             return plugin
