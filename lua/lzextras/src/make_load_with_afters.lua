@@ -1,27 +1,7 @@
 --NOTE: if you use nixCats, you should keep using the one from luaUtils
 -- as nixCats provides it information that allows it to be faster.
 
----This is primarily useful for lazily loading nvim-cmp sources,
----as they often rely on the after directory to work
----
----Recieves the names of directories from a plugin's after directory
----that you wish to source files from.
----Will return a load function that can take a name, or list of names,
----and will load a plugin and its after directories.
----The function returned is a suitable substitute for the load field of a plugin spec.
----
----Only makes sense for plugins added via optionalPlugins
----or some other opt directory on your packpath
----
----e.g. in the following example:
----load_with_after_plugin will load the plugin names it is given, and their after/plugin dir
----
----local load_with_after_plugin = require('nixCatsUtils').make_load_with_after({ 'plugin' })
----load_with_after_plugin('some_plugin')
 ---@overload fun(dirs: string[]|string): fun(names: string|string[])
----It also optionally recieves a function that should load a plugin and return its path
----for if the plugin is not on the packpath, or return nil
----to load from the packpath or nixCats list as normal
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
 return function(dirs, load)
     dirs = (type(dirs) == "table" and dirs) or { dirs }
