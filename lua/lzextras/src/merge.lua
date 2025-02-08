@@ -12,9 +12,11 @@ local M = {
             if not plugin.merge then
                 local state = states[plugin.name]
                 if state then
-                    return vim.tbl_deep_extend("force", state, plugin)
+                    state = vim.tbl_deep_extend("force", state, plugin)
+                    states[plugin.name] = nil
+                    return state
                 end
-                return state
+                return plugin
             end
             local pname = plugin.name
             local pstate = require("lze").state(pname)
@@ -40,7 +42,9 @@ local M = {
     },
     trigger = function()
         if states ~= {} then
-            require("lze").load(vim.tbl_values(states))
+            local all = vim.tbl_values(states)
+            states = {}
+            require("lze").load(all)
         end
     end,
 }
