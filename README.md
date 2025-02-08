@@ -115,3 +115,100 @@ require('lze').load {
   },
 }
 ```
+
+### key2spec
+
+converts the normal `vim.keymap.set` syntax into an item
+to put in the list of keys in a lze spec
+
+```lua
+require("lze").load {
+    name = plugin_name,
+    keys = {
+        require("lzextras").key2spec(mode, lhs, rhs, opts),
+    },
+}
+```
+
+### keymap
+
+```lua
+local keymap = require("lze").keymap {
+    name = plugin_name,
+    lazy = true,
+}
+
+keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
+
+-- OR
+
+-- if the spec has already been loaded into state
+require("lze").load {
+    name = plugin_name,
+    lazy = true,
+}
+
+local keymap = require("lze").keymap(plugin_name)
+
+keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
+```
+
+### make_load_with_afters
+
+This is primarily useful for lazily loading nvim-cmp sources,
+as they often rely on the after directory to work
+
+`vim.cmd.packadd(plugin_name)` does not load the after directory of plugins
+but we can replace the load function used by our specs!
+
+This function receives the names of directories
+from a plugin's after directory
+that you wish to source files from.
+
+Will return load function that can take a name, or list of names,
+and will load a plugin and its after directories.
+The function returned is a suitable substitute for the load field of a plugin spec.
+
+e.g. in the following example:
+load_with_after_plugin will load the plugin names it is given,
+along with their `after/plugin` and `after/ftplugin` directories.
+
+<!-- markdownlint-disable MD013 -->
+```lua
+local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin', 'ftplugin', })
+require("lze").load {
+    name = plugin_name,
+    lazy = true,
+    load = load_with_after_plugin,
+}
+require("lze").trigger_load(plugin_name)
+```
+<!-- markdownlint-enable MD013 -->
+
+- signature:
+
+It is a function that returns a customized load function.
+
+<!-- markdownlint-disable MD013 -->
+```lua
+---@overload fun(dirs: string[]|string): fun(names: string|string[])
+---It also optionally recieves a function that should load a plugin and return its path
+---for if the plugin is not on the packpath, or return nil
+---to load from the packpath as normal
+---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
+```
+<!-- markdownlint-enable MD013 -->
+
+### merge
+
+#### EXPERIMENTAL
+
+```lua
+require("lze").register_handlers(require("lzextras").merge)
+```
+
+collects and merges all plugins added with truthy `plugin.merge`
+until triggered to load it into lze's state
+
+can be triggered for a single plugin by explicitly passing `merge = false`
+for a plugin, or by calling `require("lzextras").merge.trigger()`
