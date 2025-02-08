@@ -31,7 +31,9 @@ return {
             end
             oldafter(p)
         end
+        ---@diagnostic disable-next-line: undefined-field
         local newftlist = type(lspfield.filetypes) == "string" and { lspfield.filetypes }
+            ---@diagnostic disable-next-line: undefined-field
             or type(lspfield.filetypes) == "table" and lspfield.filetypes
             or nil
         local oldftlist = type(plugin.ft) == "string" and { plugin.ft }

@@ -6,6 +6,9 @@ lzextras.Merge                                                  *lzextras.Merge*
         {trigger}  (fun())        add all the collected merged specs to lze
 
 
+lzextras.LspPlugin : lze                                    *lzextras.LspPlugin*
+
+
 lzextras.Keymap                                                *lzextras.Keymap*
 
     Fields: ~

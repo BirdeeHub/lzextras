@@ -6,7 +6,7 @@
 ---@field trigger fun()
 
 ---@class lzextras.LspPlugin: lze.Plugin
----@field lsp? any
+---@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.ClientConfig
 
 ---@class lzextras.Keymap
 ---@field set fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts)
