@@ -1,6 +1,5 @@
 ---@class lzextras.MergePlugin: lze.Plugin
----@field merge? string|true
----@field opts? any
+---@field merge? boolean
 
 ---@class lzextras.Merge
 ---merge handler must be registered

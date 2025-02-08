@@ -8,8 +8,7 @@ local M = {
         -- modify is only called when a plugin's field is not nil
         ---@param plugin lzextras.MergePlugin
         modify = function(plugin)
-            local mergevar = plugin.merge
-            if mergevar ~= true or type(mergevar) ~= "string" then
+            if not plugin.merge then
                 return plugin
             end
             local pname = plugin.name
@@ -28,12 +27,6 @@ local M = {
                     { title = "lzextras.merge" }
                 )
                 return plugin
-            end
-            if type(mergevar) == "string" then
-                plugin.after = plugin.after
-                    or function(p)
-                        require(p.merge).setup(p.opts)
-                    end
             end
             states[pname] = vim.tbl_deep_extend("force", states[pname] or {}, plugin)
             states[pname].merge = nil
