@@ -12,7 +12,7 @@
 ---@field key2spec fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts): lze.KeysSpec
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
 ---@field make_load_with_afters (fun(dirs: string[]|string): fun(names: string|string[]))|(fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[]))
----@field lsp fun(spec: string|lze.Spec):lze.Handler
+---@field lsp lze.Handler
 ---@field merge lzextras.Merge
 
 ---@type lzextras
