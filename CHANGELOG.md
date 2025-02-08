@@ -5,6 +5,15 @@
 
 ### Bug Fixes
 
+* **docgen:** outdated pre commit hook ([535b974](https://github.com/BirdeeHub/lzextras/commit/535b9747ba167d74b07497f0276580d7ed1caa50))
+* **merge:** merges until merge is passed in false, or trigger. Doesnt affect lazy ([698b2db](https://github.com/BirdeeHub/lzextras/commit/698b2db00fe52042b48ebce6af8d2b24d64a866f))
+* **merge:** SRP dont do that ([0037fb4](https://github.com/BirdeeHub/lzextras/commit/0037fb4e9fbc70857bc8255c62e4840a5573d8be))
+
+## [0.1.11](https://github.com/BirdeeHub/lzextras/compare/v0.1.10...v0.1.11) (2025-02-08)
+
+
+### Bug Fixes
+
 * **merge:** merges until merge is passed in false, or trigger. Doesnt affect lazy ([698b2db](https://github.com/BirdeeHub/lzextras/commit/698b2db00fe52042b48ebce6af8d2b24d64a866f))
 * **merge:** SRP dont do that ([0037fb4](https://github.com/BirdeeHub/lzextras/commit/0037fb4e9fbc70857bc8255c62e4840a5573d8be))
 
