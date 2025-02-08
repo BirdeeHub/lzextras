@@ -8,11 +8,12 @@ This repository contains additional utilities and handlers for lze
 
 in the lsp field you can declare:
 
-- a function to run for all lsps that recieves the plugin object, (mostly for lspconfig)
+- a function to run for all LSP specs,
+  that recieves the plugin object, (mostly for lspconfig)
 
 OR
 
-- a table of lsp settings which denotes that thing is an lsp,
+- a table of LSP settings which denotes that thing fulfills the LSP,
   and it makes sure the function ones load first
   to be parsed within the functions provided in the first form above.
 
@@ -24,17 +25,12 @@ It will make sure all specs with functions load before the specs with tables.
 require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
-    "mason.nvim",
-    dep_of = { "nvim-lspconfig" },
-    load = function(name)
-      require("birdee.utils").multi_packadd { name, "mason-lspconfig.nvim" }
-      require('mason').setup()
-      require('mason-lspconfig').setup { automatic_installation = true, }
-    end,
-  },
-  {
     "nvim-lspconfig",
+    -- the on require handler will be needed if you want to use the
+    -- fallback method of getting filetypes if you don't provide any
     on_require = { "lspconfig" },
+    -- define a function to run over all type(plugin.lsp) == table
+    -- when their filetype trigger loads them
     lsp = function(plugin)
       require('lspconfig')[plugin.name].setup(vim.tbl_extend("force",{
         capabilities = GET_YOUR_SERVER_CAPABILITIES(plugin.name),
@@ -43,8 +39,21 @@ require('lze').load {
     end,
   },
   {
+    "mason.nvim",
+    -- dep_of handler ensures we have mason-lspconfig set up before nvim-lspconfig
+    dep_of = { "nvim-lspconfig" },
+    load = function(name)
+      require("birdee.utils").multi_packadd { name, "mason-lspconfig.nvim" }
+      require('mason').setup()
+      -- auto install will make it install servers when lspconfig is called on them.
+      require('mason-lspconfig').setup { automatic_installation = true, }
+    end,
+  },
+  {
     "lua_ls",
     lsp = {
+      -- if you include a filetype, it doesnt call lspconfig for the list
+      filetypes = { 'lua' },
       settings = {
         Lua = {
           runtime = { version = 'LuaJIT' },
@@ -69,16 +78,18 @@ require('lze').load {
           telemetry = { enabled = false },
         },
       },
-      filetypes = { 'lua' },
     },
   },
   {
     "bashls",
+    -- can fall back to using lspconfig to find filetypes
+    -- as long as it can be required
     lsp = { },
   },
   {
     "pylsp",
     lsp = {
+      -- this lsp "spec" is parsed by that function above in the nvim-lspconfig spec
       filetypes = { "python" },
       settings = {
         pylsp = {
