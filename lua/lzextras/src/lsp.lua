@@ -8,13 +8,12 @@ return {
     ---@param plugin lzextras.LspPlugin
     modify = function(plugin)
         local lspfield = plugin.lsp
-        if not lspfield then
-            return plugin
-        end
         if type(lspfield) == "function" then
             ---Deal with disabling so that it stays "private"
             ---@diagnostic disable-next-line: undefined-field
             require("lzextras").lsp.states[plugin.name] = lspfield
+            return plugin
+        elseif type(lspfield) ~= "table" then
             return plugin
         end
         local oldload = plugin.load or function(_) end
