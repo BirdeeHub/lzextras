@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.12](https://github.com/BirdeeHub/lzextras/compare/v0.1.11...v0.1.12) (2025-02-08)
+
+
+### Bug Fixes
+
+* **merge:** merges ([2476389](https://github.com/BirdeeHub/lzextras/commit/24763893ea32af54b587dc29260ca8928bf8ba2d))
+
 ## [0.1.11](https://github.com/BirdeeHub/lzextras/compare/v0.1.10...v0.1.11) (2025-02-08)
 
 
