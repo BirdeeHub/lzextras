@@ -2,7 +2,11 @@
 
 ## ATTENTION: THIS REPO IS IN EARLY DEVELOPMENT
 
-This repository contains additional utilities and handlers for lze
+This repository contains extensions for [`lze`](https://github.com/BirdeeHub/lze#electric_plug-api)
+
+See there for more info on how to use the things here,
+there are some custom handlers you may register,
+and some utilities you can use to make your life easier.
 
 ### LSP handler
 
