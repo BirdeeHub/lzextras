@@ -5,10 +5,15 @@ local M = {
     ---@type lze.Handler
     handler = {
         spec_field = "merge",
+        set_lazy = false,
         -- modify is only called when a plugin's field is not nil
         ---@param plugin lzextras.MergePlugin
         modify = function(plugin)
             if not plugin.merge then
+                local state = states[plugin.name]
+                if state then
+                    return vim.tbl_deep_extend("force", state, plugin)
+                end
                 return plugin
             end
             local pname = plugin.name
