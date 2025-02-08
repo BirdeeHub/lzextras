@@ -1,3 +1,7 @@
+---@class lzextras.MergePlugin: lze.Plugin
+---@field merge? string|true
+---@field opts? any
+
 ---@class lzextras.Merge
 ---merge handler must be registered
 ---before all other handlers with modify hooks

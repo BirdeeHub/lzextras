@@ -10,10 +10,11 @@ return function(plugin)
         ---@param rhs string|function  Right-hand side |{rhs}| of the mapping, can be a Lua function.
         ---@param opts? vim.keymap.set.Opts
         set = function(mode, lhs, rhs, opts)
-            if require("lze").state(plugin_name) == false then
+            local state = require("lze").state(plugin_name)
+            if state == false then
                 vim.keymap.set(mode, lhs, rhs, opts)
                 return
-            elseif require("lze").state(plugin_name) == nil then
+            elseif state == nil then
                 -- NOTE: Technically this case would be fine,
                 -- but then, if this key is pressed
                 -- before the lze spec is loaded by configuration,
