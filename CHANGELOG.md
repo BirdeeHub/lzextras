@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/BirdeeHub/lzextras/compare/v0.1.9...v0.1.10) (2025-02-08)
+
+
+### Bug Fixes
+
+* **merge:** default setup opts when merge is string ([f73c9fe](https://github.com/BirdeeHub/lzextras/commit/f73c9fea5ab595cfab052ed50cc4af4044d740d2))
+
 ## [0.1.9](https://github.com/BirdeeHub/lzextras/compare/v0.1.8...v0.1.9) (2025-02-08)
 
 
