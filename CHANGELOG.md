@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9](https://github.com/BirdeeHub/lzextras/compare/v0.1.8...v0.1.9) (2025-02-08)
+
+
+### Bug Fixes
+
+* **lsp:** lsp handler is now semi-normal handler ([497b021](https://github.com/BirdeeHub/lzextras/commit/497b0219c3db10a7597a3020187ef06ac0c8e4e4))
+
 ## [0.1.8](https://github.com/BirdeeHub/lzextras/compare/v0.1.7...v0.1.8) (2025-02-07)
 
 
