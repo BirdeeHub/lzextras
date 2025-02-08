@@ -146,7 +146,7 @@ require("lze").load {
 ### keymap
 
 ```lua
-local keymap = require("lze").keymap {
+local keymap = require("lzextras").keymap {
     name = plugin_name,
     lazy = true,
 }
@@ -161,7 +161,7 @@ require("lze").load {
     lazy = true,
 }
 
-local keymap = require("lze").keymap(plugin_name)
+local keymap = require("lzextras").keymap(plugin_name)
 
 keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 ```
