@@ -27,6 +27,7 @@ It auto populates file types from lspconfig if you dont include any under `plugi
 
 It will make sure all specs with functions load before the specs with tables.
 
+<!-- markdownlint-disable MD013 -->
 ```lua
 require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
@@ -58,7 +59,7 @@ require('lze').load {
   {
     "lua_ls",
     lsp = {
-      -- if you include a filetype, it doesnt call lspconfig for the list
+      -- if you include a filetype, it doesnt call lspconfig for the list of filetypes (faster)
       filetypes = { 'lua' },
       settings = {
         Lua = {
@@ -95,7 +96,8 @@ require('lze').load {
   {
     "pylsp",
     lsp = {
-      -- this lsp "spec" is parsed by that function above in the nvim-lspconfig spec
+      -- these lsp "specs" are ran by that function above in the nvim-lspconfig spec
+      -- only the filetype trigger is handled by the handler.
       filetypes = { "python" },
       settings = {
         pylsp = {
@@ -121,6 +123,7 @@ require('lze').load {
   },
 }
 ```
+<!-- markdownlint-enable MD013 -->
 
 ---
 
