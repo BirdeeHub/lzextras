@@ -8,6 +8,8 @@ See there for more info on how to use the things here,
 there are some custom handlers you may register,
 and some utilities you can use to make your life easier.
 
+---
+
 ### LSP handler
 
 in the lsp field you can declare:
@@ -213,6 +215,7 @@ It is a function that returns a customized load function.
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
 ```
 <!-- markdownlint-enable MD013 -->
+---
 
 ### merge
 
