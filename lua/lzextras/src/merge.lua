@@ -14,7 +14,7 @@ local M = {
                 if state then
                     return vim.tbl_deep_extend("force", state, plugin)
                 end
-                return plugin
+                return state
             end
             local pname = plugin.name
             local pstate = require("lze").state(pname)
