@@ -25,7 +25,6 @@ require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
     "mason.nvim",
-    enabled = not catUtils.isNixCats,
     dep_of = { "nvim-lspconfig" },
     load = function(name)
       require("birdee.utils").multi_packadd { name, "mason-lspconfig.nvim" }
@@ -35,18 +34,16 @@ require('lze').load {
   },
   {
     "nvim-lspconfig",
-    for_cat = "general.core",
     on_require = { "lspconfig" },
     lsp = function(plugin)
       require('lspconfig')[plugin.name].setup(vim.tbl_extend("force",{
-        capabilities = require('birdee.LSPs.caps_and_attach').get_capabilities(plugin.name),
-        on_attach = require('birdee.LSPs.caps_and_attach').on_attach,
+        capabilities = GET_YOUR_SERVER_CAPABILITIES(plugin.name),
+        on_attach = YOUR_ON_ATTACH,
       }, plugin.lsp or {}))
     end,
   },
   {
     "lua_ls",
-    enabled = nixCats('lua') or nixCats('neonixdev'),
     lsp = {
       settings = {
         Lua = {
@@ -56,7 +53,7 @@ require('lze').load {
           },
           signatureHelp = { enabled = true },
           diagnostics = {
-            globals = { "nixCats", "vim", "make_test" },
+            globals = { "vim", },
             disable = { 'missing-fields' },
           },
           workspace = {
