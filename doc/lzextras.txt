@@ -1,3 +1,6 @@
+lzextras.MergePlugin : lze                                *lzextras.MergePlugin*
+
+
 lzextras.Merge                                                  *lzextras.Merge*
 
     Fields: ~
