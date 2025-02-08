@@ -178,6 +178,9 @@ as they often rely on the after directory to work
 > you should keep using the one from the luaUtils
 > template as nixCats provides it information that allows it to be faster.
 
+You could also use [rtp.nvim](https://github.com/nvim-neorocks/rtp.nvim)
+instead of this function.
+
 `vim.cmd.packadd(plugin_name)` does not load the after directory of plugins
 but we can replace the load function used by our specs!
 
