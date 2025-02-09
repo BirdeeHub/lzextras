@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.15](https://github.com/BirdeeHub/lzextras/compare/v0.1.14...v0.1.15) (2025-02-09)
+
+
+### Bug Fixes
+
+* **loadwithafter:** make function more configurable ([90dd716](https://github.com/BirdeeHub/lzextras/commit/90dd716b10e15525f8b90e31b202d7cc14c07a9e))
+
 ## [0.1.14](https://github.com/BirdeeHub/lzextras/compare/v0.1.13...v0.1.14) (2025-02-08)
 
 
