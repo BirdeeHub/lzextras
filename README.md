@@ -227,14 +227,14 @@ It is a function that returns a customized load function.
 > but you should provide the following load function as the second argument so that you don't take a performance penalty for doing so.
 
 ```lua
-  local function faster_get_path(name)
-    local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
-    if path then
-      vim.cmd.packadd(name)
-      return path
-    end
-    return nil -- nil will make it default to normal behavior
+local function faster_get_path(name)
+  local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
+  if path then
+    vim.cmd.packadd(name)
+    return path
   end
+  return nil -- nil will make it default to normal behavior
+end
 local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin' }, faster_get_path)
 ```
 <!-- markdownlint-enable MD013 -->
