@@ -173,11 +173,6 @@ keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 This is primarily useful for lazily loading nvim-cmp sources,
 as they often rely on the after directory to work
 
-> [!NOTE]:
-> if you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim),
-> you should keep using the one from the luaUtils
-> template as nixCats provides it information that allows it to be faster.
-
 You could also use [rtp.nvim](https://github.com/nvim-neorocks/rtp.nvim)
 instead of this function.
 
@@ -223,6 +218,24 @@ It is a function that returns a customized load function.
 --- dirs can also be a function that takes the path to the after directory and name of the plugin and returns a list of files to load.
 ---@overload fun(dirs: fun(afterpath: string, name: string)): fun(names: string|string[])
 ---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
+```
+
+> [!NOTE]
+>
+> if you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim), you may replace `require("nixCatsUtils.lzUtils").make_load_with_after` with the above function.
+>
+> but you should provide the following load function as the second argument so that you don't take a performance penalty for doing so.
+
+```lua
+  local function faster_get_path(name)
+    local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
+    if path then
+      vim.cmd.packadd(name)
+      return path
+    end
+    return nil -- nil will make it default to normal behavior
+  end
+local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin' }, faster_get_path)
 ```
 <!-- markdownlint-enable MD013 -->
 ---

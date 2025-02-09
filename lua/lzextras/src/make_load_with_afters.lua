@@ -1,6 +1,3 @@
---NOTE: if you use nixCats, you should keep using the one from luaUtils
--- as nixCats provides it information that allows it to be faster.
-
 ---@overload fun(dirs: string[]|string): fun(names: string|string[])
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
 ---@overload fun(dirs: fun(afterpath: string, name: string)): fun(names: string|string[])
