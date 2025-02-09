@@ -3,8 +3,10 @@
 
 ---@overload fun(dirs: string[]|string): fun(names: string|string[])
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
+---@overload fun(dirs: fun(afterpath: string, name: string)): fun(names: string|string[])
+---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
 return function(dirs, load)
-    dirs = (type(dirs) == "table" and dirs) or { dirs }
+    dirs = ((type(dirs) == "table" or type(dirs) == "function") and dirs) or { dirs }
     local fromPackpath = function(name)
         for _, packpath in ipairs(vim.opt.packpath:get()) do
             local plugin_path = vim.fn.globpath(packpath, "pack/*/opt/" .. name, nil, true, true)
@@ -50,14 +52,22 @@ return function(dirs, load)
             local plugpath = info.path or fromPackpath(info.name)
             if type(plugpath) == "string" then
                 local afterpath = plugpath .. "/after"
-                for _, dir in ipairs(dirs) do
-                    if vim.fn.isdirectory(afterpath) == 1 then
-                        local plugin_dir = afterpath .. "/" .. dir
-                        if vim.fn.isdirectory(plugin_dir) == 1 then
-                            local files = vim.fn.glob(plugin_dir .. "/*", false, true)
-                            for _, file in ipairs(files) do
-                                if vim.fn.filereadable(file) == 1 then
-                                    vim.cmd("source " .. file)
+                if vim.fn.isdirectory(afterpath) == 1 then
+                    if type(dirs) == "function" then
+                        for _, file in ipairs(dirs(afterpath, info.name)) do
+                            if vim.fn.filereadable(file) == 1 then
+                                vim.cmd("source " .. file)
+                            end
+                        end
+                    elseif type(dirs) == "table" then
+                        for _, dir in ipairs(dirs) do
+                            local plugin_dir = afterpath .. "/" .. dir
+                            if vim.fn.isdirectory(plugin_dir) == 1 then
+                                local files = vim.fn.glob(plugin_dir .. "/*", false, true)
+                                for _, file in ipairs(files) do
+                                    if vim.fn.filereadable(file) == 1 then
+                                        vim.cmd("source " .. file)
+                                    end
                                 end
                             end
                         end
