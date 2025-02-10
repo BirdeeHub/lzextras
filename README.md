@@ -216,7 +216,7 @@ It is a function that returns a customized load function.
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
 
 --- dirs can also be a function that takes the path to the after directory and name of the plugin and returns a list of files to load.
----@overload fun(dirs: fun(afterpath: string, name: string)): fun(names: string|string[])
+---@overload fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[])
 ---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
 ```
 
