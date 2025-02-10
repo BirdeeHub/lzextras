@@ -50,6 +50,8 @@ describe("lzextras.lsp", function()
         assert.spy(lspfun_spy).was.called(1)
         lze.trigger_load("bar_ls")
         assert.spy(lspfun_spy).was.called(2)
+        lze.trigger_load("fallback_foo_ls")
+        assert.spy(lspfun_spy).was.called(3)
         lsp_handler.ft_fallback = old_ft_fallback
         lze.remove_handlers("lsp")
     end)
