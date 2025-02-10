@@ -20,7 +20,7 @@
 ---@class lzextras
 ---@field key2spec fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts): lze.KeysSpec
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
----@field make_load_with_afters (fun(dirs: string[]|string): fun(names: string|string[]))|(fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[]))
+---@field make_load_with_afters (fun(dirs: string[]|string): fun(names: string|string[]))|(fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[]))|(fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[]))|(fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[]))
 ---@field lsp lzextras.LspHandler
 ---@field merge lzextras.Merge
 
