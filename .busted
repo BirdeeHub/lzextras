@@ -1,7 +1,7 @@
 return {
     _all = {
         coverage = false,
-        lpath = "lua/?.lua;lua/?/init.lua;" .. os.getenv('TEST_LPATH'),
+        lpath = "lua/?.lua;lua/?/init.lua;" .. (os.getenv('TEST_LPATH') or ""),
     },
     default = {
         verbose = true
