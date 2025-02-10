@@ -1,7 +1,9 @@
+local test_lpath = os.getenv('TEST_LPATH')
+local extra_shell_deps = test_lpath and (";" .. test_lpath) or ""
 return {
     _all = {
         coverage = false,
-        lpath = "lua/?.lua;lua/?/init.lua;" .. (os.getenv('TEST_LPATH') or ""),
+        lpath = "lua/?.lua;lua/?/init.lua;" .. extra_shell_deps,
     },
     default = {
         verbose = true
