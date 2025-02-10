@@ -127,20 +127,30 @@
           };
         };
 
-        devShell = pkgs.mkShell {
-          name = "lzextras devShell";
-          DEVSHELL = 0;
-          shellHook = ''
-            ${pre-commit-check.shellHook}
-            ln -fs ${pkgs.luarc-to-json luarc} .luarc.json
-          '';
-          buildInputs =
-            self.checks.${system}.pre-commit-check.enabledPackages
-            ++ (with pkgs; [
-              lua-language-server
-              busted-nlua
-            ]);
-        };
+        devShell = let
+          test_lpath =
+            pkgs.lib.pipe [
+              pkgs.vimPlugins.lze
+            ] [
+              (map (v: "${v}/lua/?.lua;${v}/lua/?/init.lua"))
+              (builtins.concatStringsSep ";")
+            ];
+        in
+          pkgs.mkShell {
+            name = "lzextras devShell";
+            DEVSHELL = 0;
+            shellHook = ''
+              ${pre-commit-check.shellHook}
+              ln -fs ${pkgs.luarc-to-json luarc} .luarc.json
+              export TEST_LPATH="${test_lpath}"
+            '';
+            buildInputs =
+              self.checks.${system}.pre-commit-check.enabledPackages
+              ++ (with pkgs; [
+                lua-language-server
+                busted-nlua
+              ]);
+          };
       in {
         devShells = {
           default = devShell;

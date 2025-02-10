@@ -11,6 +11,9 @@
 ---@class lzextras.LspPlugin: lze.Plugin
 ---@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.ClientConfig
 
+---@class lzextras.LspHandler: lze.Handler
+---@field ft_fallback fun(name: string): string[]
+
 ---@class lzextras.Keymap
 ---@field set fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts)
 
@@ -18,7 +21,7 @@
 ---@field key2spec fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts): lze.KeysSpec
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
 ---@field make_load_with_afters (fun(dirs: string[]|string): fun(names: string|string[]))|(fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[]))
----@field lsp lze.Handler
+---@field lsp lzextras.LspHandler
 ---@field merge lzextras.Merge
 
 ---@type lzextras
