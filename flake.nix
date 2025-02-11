@@ -114,11 +114,10 @@
                   echo "Error: Unable to determine Git root."
                   exit 1
                 fi
-                maindoc="$(realpath "$gitroot/doc/lzextras.txt")"
+                DOCOUT="$(realpath "$gitroot/doc/lzextras.txt")"
                 luamain="$(realpath "$gitroot/lua/lzextras/init.lua")"
-                mkdir -p "$(dirname "$maindoc")"
-                export DOCOUT=$(mktemp)
-                ${pkgs.lemmy-help}/bin/lemmy-help "$luamain" > "$maindoc"
+                mkdir -p "$(dirname "$DOCOUT")"
+                ${pkgs.lemmy-help}/bin/lemmy-help "$luamain" > "$DOCOUT"
               '';
             in {
               enable = true;
