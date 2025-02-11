@@ -45,7 +45,7 @@ return function(dirs, load)
                 )
             end
         end
-        for _, info in pairs(to_source) do
+        for _, info in ipairs(to_source) do
             local plugpath = info.path or fromPackpath(info.name)
             if type(plugpath) == "string" then
                 local afterpath = plugpath .. "/after"

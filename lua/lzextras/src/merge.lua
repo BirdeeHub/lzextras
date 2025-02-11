@@ -14,6 +14,7 @@ local M = {
                 if state then
                     state = vim.tbl_deep_extend("force", state, plugin)
                     states[plugin.name] = nil
+                    state.merge = nil
                     return state
                 end
                 return plugin
