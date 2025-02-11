@@ -1,6 +1,6 @@
 ---@overload fun(dirs: string[]|string): fun(names: string|string[])
 ---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
----@overload fun(dirs: fun(afterpath: string, name: string)): fun(names: string|string[])
+---@overload fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[])
 ---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
 return function(dirs, load)
     dirs = ((type(dirs) == "table" or type(dirs) == "function") and dirs) or { dirs }
