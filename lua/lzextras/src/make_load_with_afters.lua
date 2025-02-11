@@ -51,9 +51,12 @@ return function(dirs, load)
                 local afterpath = plugpath .. "/after"
                 if vim.fn.isdirectory(afterpath) == 1 then
                     if type(dirs) == "function" then
-                        for _, file in ipairs(dirs(afterpath, info.name)) do
-                            if vim.fn.filereadable(file) == 1 then
-                                vim.cmd("source " .. file)
+                        local targets = dirs(afterpath, info.name)
+                        if type(targets) == "table" then
+                            for _, file in ipairs(targets) do
+                                if vim.fn.filereadable(file) == 1 then
+                                    vim.cmd("source " .. file)
+                                end
                             end
                         end
                     elseif type(dirs) == "table" then
