@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.16](https://github.com/BirdeeHub/lzextras/compare/v0.1.15...v0.1.16) (2025-02-11)
+
+
+### Bug Fixes
+
+* **load_with_afters:** more forgiving with return value to optional dirs function ([edd255a](https://github.com/BirdeeHub/lzextras/commit/edd255a6a3312c1895ed926441b629d98d9afb96))
+
 ## [0.1.15](https://github.com/BirdeeHub/lzextras/compare/v0.1.14...v0.1.15) (2025-02-09)
 
 
