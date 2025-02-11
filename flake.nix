@@ -115,9 +115,10 @@
                   exit 1
                 fi
                 maindoc="$(realpath "$gitroot/doc/lzextras.txt")"
+                luamain="$(realpath "$gitroot/lua/lzextras/init.lua")"
                 mkdir -p "$(dirname "$maindoc")"
                 export DOCOUT=$(mktemp)
-                ${pkgs.lemmy-help}/bin/lemmy-help ${./lua/lzextras/init.lua} > "$maindoc"
+                ${pkgs.lemmy-help}/bin/lemmy-help "$luamain" > "$maindoc"
               '';
             in {
               enable = true;
