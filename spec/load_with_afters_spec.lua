@@ -49,7 +49,24 @@ describe("lzextras.make_load_with_afters", function()
         assert.spy(dirs_spy).was.called(1)
         assert.same(true, vim.g.test_plugin_called)
         vim.system({ "rm", vim.fs.joinpath(test_plugin_path, "plugin", "test.lua") }):wait()
-        package.loaded["plugins"] = nil
+        vim.g.test_plugin_called = nil
+    end)
+    it("finds plugins from packpath", function()
+        local newload = make_load_with_afters(function(path, name)
+            dirs_spy(path, name)
+            local test_plug = vim.fs.joinpath(path, "plugin", "test.lua")
+            local plugin_content = [[
+                vim.g.test_plugin_called = true
+            ]]
+            local fh = assert(io.open(test_plug, "w"), "Could not open config file for writing")
+            fh:write(plugin_content)
+            fh:close()
+            return { test_plug }
+        end)
+        vim.opt.packpath:prepend(tempdir)
+        newload("test_plugin")
+        assert.spy(dirs_spy).was.called(2)
+        assert.same(true, vim.g.test_plugin_called)
         vim.g.test_plugin_called = nil
         vim.system({ "rm", "-r", tempdir }):wait()
     end)
