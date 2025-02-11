@@ -8,9 +8,7 @@ See there for more info on how to use the things here,
 there are some custom handlers you may register,
 and some utilities you can use to make your life easier.
 
----
-
-### LSP handler
+## LSP handler
 
 in the lsp field you can declare:
 
@@ -125,9 +123,7 @@ require('lze').load {
 ```
 <!-- markdownlint-enable MD013 -->
 
----
-
-### key2spec
+## key2spec
 
 converts the normal `vim.keymap.set` syntax into an item
 to put in the list of keys in a lze spec
@@ -141,9 +137,7 @@ require("lze").load {
 }
 ```
 
----
-
-### keymap
+## keymap
 
 ```lua
 local keymap = require("lzextras").keymap {
@@ -166,18 +160,16 @@ local keymap = require("lzextras").keymap(plugin_name)
 keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 ```
 
----
-
-### make_load_with_afters
+## make_load_with_afters
 
 This is primarily useful for lazily loading nvim-cmp sources,
 as they often rely on the after directory to work
 
-You could also use [rtp.nvim](https://github.com/nvim-neorocks/rtp.nvim)
-instead of this function.
-
 `vim.cmd.packadd(plugin_name)` does not load the after directory of plugins
 but we can replace the load function used by our specs!
+
+You could also use [rtp.nvim](https://github.com/nvim-neorocks/rtp.nvim)
+instead of this function.
 
 This function receives the names of directories
 from a plugin's after directory
@@ -222,9 +214,9 @@ It is a function that returns a customized load function.
 
 > [!NOTE]
 >
-> if you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim), you may replace `require("nixCatsUtils.lzUtils").make_load_with_after` with the above function.
->
-> but you should provide the following load function as the second argument so that you don't take a performance penalty for doing so.
+> If you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim),
+> you should provide the following load function as the second argument for better performance
+> because `nixCats` provides us information that allows us to avoid searching the whole packpath
 
 ```lua
 local function faster_get_path(name)
@@ -238,11 +230,9 @@ end
 local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin' }, faster_get_path)
 ```
 <!-- markdownlint-enable MD013 -->
----
+## merge
 
-### merge
-
-#### EXPERIMENTAL
+### EXPERIMENTAL
 
 ```lua
 require("lze").register_handlers(require("lzextras").merge)
