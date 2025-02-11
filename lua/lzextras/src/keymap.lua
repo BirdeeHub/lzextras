@@ -1,6 +1,10 @@
 local key2spec = require("lzextras.src.key2spec")
 return function(plugin)
     local plugin_name = type(plugin) == "table" and (plugin.name or plugin[1]) or plugin
+    if type(plugin_name) ~= "string" then
+        vim.notify("function accepts name or single plugin spec", vim.log.levels.ERROR, { title = "lzextras.keymap" })
+        return
+    end
     if type(plugin) == "table" then
         require("lze").load(plugin)
     end
