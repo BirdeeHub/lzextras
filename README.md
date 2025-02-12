@@ -8,6 +8,56 @@ This repository contains some custom handlers you may register,
 and some utilities you can use to make your life easier,
 (or harder but more exciting, in the case of the merge handler)
 
+## Downloading
+
+via [paq-nvim](https://github.com/savq/paq-nvim):
+
+```lua
+require "paq" {
+    { "BirdeeHub/lzextras" }
+}
+```
+
+<!-- markdownlint-disable -->
+<details>
+  <summary>
+    <b><a href="https://wiki.nixos.org/wiki/Neovim">Nix examples</a></b>
+  </summary>
+
+  - Home Manager:
+
+  ```nix
+  programs.neovim = {
+    enable = true;
+    plugins = with pkgs.vimPlugins [
+      {
+        plugin = lze;
+        config = ''
+          -- optional, add extra handlers
+          -- require("lze").register_handlers(require("lzextras").lsp)
+        '';
+        type = "lua";
+      }
+      lzextras
+    ];
+  };
+  ```
+
+  - Not on nixkgs-unstable?
+
+  If your neovim is not on the `nixpkgs-unstable` channel,
+  `vimPlugins.lzextras` will not yet be in nixpkgs for you.
+  You may instead get it from this flake!
+  ```nix
+  # in your flake inputs:
+  inputs.lzextras.url = "github:BirdeeHub/lzextras";
+  ```
+  Then, pass your config your inputs from your flake,
+  and retrieve `lzextras` with `inputs.lzextras.packages.${pkgs.system}.default`:
+
+</details>
+<!-- markdownlint-restore -->
+
 ## LSP handler
 
 In the `lsp` field you can declare:
