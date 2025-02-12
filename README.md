@@ -100,7 +100,8 @@ require('lze').load {
     -- dep_of handler ensures we have mason-lspconfig set up before nvim-lspconfig
     dep_of = { "nvim-lspconfig" },
     load = function(name)
-      require("birdee.utils").multi_packadd { name, "mason-lspconfig.nvim" }
+      vim.cmd.packadd(name)
+      vim.cmd.packadd("mason-lspconfig.nvim")
       require('mason').setup()
       -- auto install will make it install servers when lspconfig is called on them.
       require('mason-lspconfig').setup { automatic_installation = true, }
