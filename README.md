@@ -1,29 +1,31 @@
 # lzextras
 
-## ATTENTION: THIS REPO IS IN EARLY DEVELOPMENT
-
 This repository contains extensions for [`lze`](https://github.com/BirdeeHub/lze#electric_plug-api)
 
-See there for more info on how to use the things here,
-there are some custom handlers you may register,
-and some utilities you can use to make your life easier.
+See there for more info on how to use the things here.
+
+This repository contains some custom handlers you may register,
+and some utilities you can use to make your life easier,
+(or harder but more exciting, in the case of the merge handler)
 
 ## LSP handler
 
-in the lsp field you can declare:
+In the `lsp` field you can declare:
 
-- a function to run for all LSP specs,
-  that recieves the plugin object, (mostly for lspconfig)
+- A function to run for all LSP specs,
+  that receives the plugin object, (mostly for `lspconfig`)
 
 OR
 
-- a table of LSP settings which denotes that thing fulfills the LSP,
-  and it makes sure the function ones load first
-  to be parsed within the functions provided in the first form above.
+- A table of LSP settings for the LSP implementations.
+  It makes sure the above function type specs load first,
+  and the function type spec will run for all table type LSP specs
 
-It auto populates file types from lspconfig if you dont include any under `plugin.lsp.filetypes`
+It auto populates file types from `lspconfig` if you don't include any under `plugin.lsp.filetypes`
 
 It will make sure all specs with functions load before the specs with tables.
+
+- Example useage:
 
 <!-- markdownlint-disable MD013 -->
 ```lua
@@ -139,12 +141,17 @@ require("lze").load {
 
 ## keymap
 
+Allows you to add keymap triggers to plugins from outside of their specs,
+after the spec has been added to `lze`. Useful for if you have a lot of keymaps
+that involve plugins but you don't want to rewrite them all.
+
 ```lua
 local keymap = require("lzextras").keymap {
     name = plugin_name,
     lazy = true,
 }
 
+-- The normal keymap.set syntax
 keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 
 -- OR
@@ -157,6 +164,7 @@ require("lze").load {
 
 local keymap = require("lzextras").keymap(plugin_name)
 
+-- The normal keymap.set syntax
 keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 ```
 
@@ -185,7 +193,7 @@ along with their `after/plugin` and `after/ftplugin` directories.
 
 <!-- markdownlint-disable MD013 -->
 ```lua
-local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin', 'ftplugin', })
+local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin', 'ftplugin', })
 require("lze").load {
     name = plugin_name,
     lazy = true,
@@ -227,15 +235,13 @@ local function faster_get_path(name)
   end
   return nil -- nil will make it default to normal behavior
 end
-local load_with_after_plugin = require('lzextras').make_load_with_after({ 'plugin' }, faster_get_path)
+local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin' }, faster_get_path)
 ```
 <!-- markdownlint-enable MD013 -->
 ## merge
 
-### EXPERIMENTAL
-
 ```lua
-require("lze").register_handlers(require("lzextras").merge)
+require("lze").register_handlers(require("lzextras").merge.handler)
 ```
 
 collects and merges all plugins added with truthy `plugin.merge`
@@ -243,3 +249,59 @@ until triggered to load it into lze's state
 
 can be triggered for a single plugin by explicitly passing `merge = false`
 for a plugin, or by calling `require("lzextras").merge.trigger()`
+
+In other words, doing the following would not queue it to be triggered yet,
+but rather cause the merge handler to collect and merge them.
+
+```lua
+require("lze").load({
+  {
+    "merge_target",
+    merge = true,
+    dep_of = { "lspconfig" },
+    lsp = { filetypes = {} },
+  },
+  {
+    "merge_target",
+    merge = true,
+    dep_of = { "not_lspconfig" },
+    lsp = { settings = {} },
+  },
+})
+```
+
+Then, to enter the merged plugin into `lze`,
+you may either use `require("lzextras").merge.trigger()`
+to finalize all plugins currently collected by the merge handler,
+or you may finalize them individually by passing a spec with `merge = false`
+explicitly like so:
+
+```lua
+require("lze").load({
+  {
+    "merge_target",
+    merge = false,
+  }
+})
+```
+
+the resulting plugin `merge_target` from these examples entered into state will be:
+
+```lua
+{
+  name = "merge_target",
+  dep_of = { "not_lspconfig" },
+  lsp = {
+    settings = {},
+    filetypes = {},
+  },
+}
+```
+
+If you enter a plugin with no merge field into `lze` that
+shares the name of one currently held in the merge handler,
+it will refuse the duplicate plugin when you
+trigger the merge handler to add it to `lze`.
+
+So be sure to know which plugins
+you allow to be merged and which ones you do not!
