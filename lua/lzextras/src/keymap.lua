@@ -26,7 +26,6 @@ return function(plugin)
                 -- I think the chances of this are basically 0, but who knows,
                 -- maybe someone only sets up the lze spec
                 -- in the command spec of another plugin.
-                -- Will re evaluate how I feel about this later after testing and stuff
                 vim.notify(
                     'setting keybind for "' .. plugin_name .. '" failed, no corresponding lze spec loaded',
                     vim.log.levels.ERROR,
