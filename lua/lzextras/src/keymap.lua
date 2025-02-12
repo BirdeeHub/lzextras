@@ -25,7 +25,7 @@ return function(plugin)
                 -- it wont have anything to load.
                 -- I think the chances of this are basically 0, but who knows,
                 -- maybe someone only sets up the lze spec
-                -- in the command spec of another plugin.
+                -- in the spec of another plugin.
                 vim.notify(
                     'setting keybind for "' .. plugin_name .. '" failed, no corresponding lze spec loaded',
                     vim.log.levels.ERROR,
