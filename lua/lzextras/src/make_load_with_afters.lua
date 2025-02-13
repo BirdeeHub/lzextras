@@ -33,7 +33,7 @@ return function(dirs, load)
                                 .. '" failed, and path provided by custom load function (if provided) was not a string\n'
                                 .. err,
                             vim.log.levels.WARN,
-                            { title = "lzextras.make_load_with_after" }
+                            { title = "lzextras.make_load_with_afters" }
                         )
                     end
                 end
@@ -41,7 +41,7 @@ return function(dirs, load)
                 vim.notify(
                     "plugin name was not a string and was instead of value:\n" .. vim.inspect(name),
                     vim.log.levels.WARN,
-                    { title = "lzextras.make_load_with_after" }
+                    { title = "lzextras.make_load_with_afters" }
                 )
             end
         end
@@ -55,7 +55,7 @@ return function(dirs, load)
                         if type(targets) == "table" then
                             for _, file in ipairs(targets) do
                                 if vim.fn.filereadable(file) == 1 then
-                                    vim.cmd("source " .. file)
+                                    vim.cmd.source(file)
                                 end
                             end
                         end
@@ -66,7 +66,7 @@ return function(dirs, load)
                                 local files = vim.fn.glob(plugin_dir .. "/*", false, true)
                                 for _, file in ipairs(files) do
                                     if vim.fn.filereadable(file) == 1 then
-                                        vim.cmd("source " .. file)
+                                        vim.cmd.source(file)
                                     end
                                 end
                             end
