@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.18](https://github.com/BirdeeHub/lzextras/compare/v0.1.17...v0.1.18) (2025-02-13)
+
+
+### Bug Fixes
+
+* **make_load_with_afters:** error message fix ([9923cd1](https://github.com/BirdeeHub/lzextras/commit/9923cd12fd32fca889543bcf5b102a747711878b))
+
 ## [0.1.17](https://github.com/BirdeeHub/lzextras/compare/v0.1.16...v0.1.17) (2025-02-12)
 
 
