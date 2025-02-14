@@ -3,11 +3,11 @@ vim.g.lze = {
     load = function() end,
 }
 local lze = require("lze")
-local merge_module = require("lzextras").merge
+local merge = require("lzextras").merge
 
 describe("lzextras.merge", function()
     it("bounces new additions", function()
-        lze.register_handlers(merge_module.handler)
+        lze.register_handlers(merge)
         lze.load({
             {
                 "merge_target",
@@ -43,7 +43,7 @@ describe("lzextras.merge", function()
         }, lze.state.merge_target)
     end)
     it("can be triggered by trigger function", function()
-        lze.register_handlers(merge_module.handler)
+        lze.register_handlers(merge)
         lze.load({
             {
                 "merge_target_2",
@@ -67,7 +67,7 @@ describe("lzextras.merge", function()
                 ft = { "go" },
             },
         })
-        merge_module.trigger()
+        merge.trigger()
         assert.same({
             name = "merge_target_2",
             dep_of = { "not_lspconfig" },

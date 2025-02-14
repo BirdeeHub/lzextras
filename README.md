@@ -292,7 +292,7 @@ local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plug
 ## merge
 
 ```lua
-require("lze").register_handlers(require("lzextras").merge.handler)
+require("lze").register_handlers(require("lzextras").merge)
 ```
 
 collects and merges all plugins added with truthy `plugin.merge`

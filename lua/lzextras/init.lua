@@ -1,10 +1,10 @@
 ---@class lzextras.MergePlugin: lze.Plugin
 ---@field merge? boolean
 
----@class lzextras.Merge
 ---merge handler must be registered
 ---before all other handlers with modify hooks
----@field handler lze.Handler
+---@class lzextras.MergeHandler: lze.Handler
+---
 ---add all the collected merged specs to lze
 ---@field trigger fun()
 
@@ -22,7 +22,7 @@
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
 ---@field make_load_with_afters (fun(dirs: string|string[]|fun(afterpath: string, name: string):string[]): fun(names: string|string[]))|(fun(dirs: (string|string[]|fun(afterpath: string, name: string):string[]), load: fun(name: string):string|nil): fun(names: string|string[]))
 ---@field lsp lzextras.LspHandler
----@field merge lzextras.Merge
+---@field merge lzextras.MergeHandler
 
 ---@type lzextras
 ---@diagnostic disable-next-line
