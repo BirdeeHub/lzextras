@@ -32,9 +32,9 @@ require "paq" {
     plugins = with pkgs.vimPlugins [
       {
         plugin = lze;
-        config = ''
+        config = /*lua*/''
           -- optional, add extra handlers
-          -- require("lze").register_handlers(require("lzextras").lsp)
+          require("lze").register_handlers(require("lzextras").lsp)
         '';
         type = "lua";
       }
@@ -43,17 +43,22 @@ require "paq" {
   };
   ```
 
-  - Not on nixkgs-unstable?
+  - Not on nixpkgs-unstable?
 
   If your neovim is not on the `nixpkgs-unstable` channel,
-  `vimPlugins.lzextras` will not yet be in nixpkgs for you.
+  `vimPlugins.lzextras` may not yet be in nixpkgs for you.
   You may instead get it from this flake!
   ```nix
   # in your flake inputs:
-  inputs.lzextras.url = "github:BirdeeHub/lzextras";
+  inputs = {
+    lzextras.url = "github:BirdeeHub/lzextras";
+  };
   ```
   Then, pass your config your inputs from your flake,
-  and retrieve `lzextras` with `inputs.lzextras.packages.${pkgs.system}.default`:
+  and retrieve `lzextras` with:
+  ```nix
+  inputs.lzextras.packages.${pkgs.system}.default`:
+  ```
 
 </details>
 <!-- markdownlint-restore -->
