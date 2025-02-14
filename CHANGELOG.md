@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.19](https://github.com/BirdeeHub/lzextras/compare/v0.1.18...v0.1.19) (2025-02-14)
+
+
+### Bug Fixes
+
+* **merge:** merge handler slightly simplified ([dc8d951](https://github.com/BirdeeHub/lzextras/commit/dc8d951ac51537d878df77f4198c5b137099361b))
+
 ## [0.1.18](https://github.com/BirdeeHub/lzextras/compare/v0.1.17...v0.1.18) (2025-02-13)
 
 
