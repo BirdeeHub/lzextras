@@ -15,6 +15,8 @@
         packages.myVimPackage = {
           start = [
             # Add plugin dependencies that aren't on LuaRocks here
+            final.vimPlugins.nvim-lspconfig
+            final.vimPlugins.lze
           ];
         };
       };

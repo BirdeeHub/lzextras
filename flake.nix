@@ -61,9 +61,9 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
+            lze.overlays.default
             gen-luarc.overlays.default
             neorocks.overlays.default
-            lze.overlays.default
             ci-overlay
             pkg-overlay
           ];
@@ -71,11 +71,11 @@
 
         luarc = pkgs.mk-luarc {
           nvim = pkgs.neovim-nightly;
-          plugins = [pkgs.vimPlugins.lze];
+          plugins = [pkgs.vimPlugins.lze pkgs.vimPlugins.nvim-lspconfig];
         };
         luarccurrent = pkgs.mk-luarc {
           nvim = pkgs.neovim;
-          plugins = [pkgs.vimPlugins.lze];
+          plugins = [pkgs.vimPlugins.lze pkgs.vimPlugins.nvim-lspconfig];
         };
 
         type-check-nightly = pre-commit-hooks.lib.${system}.run {
@@ -131,6 +131,7 @@
           test_lpath =
             pkgs.lib.pipe [
               pkgs.vimPlugins.lze
+              pkgs.vimPlugins.nvim-lspconfig
             ] [
               (map (v: "${v}/lua/?.lua;${v}/lua/?/init.lua"))
               (builtins.concatStringsSep ";")
@@ -161,6 +162,7 @@
           default = lzextras-vimPlugin;
           lzextras-luaPackage = pkgs.lua51Packages.${name};
           lzextras-vimPlugin = pkgs.vimPlugins.${name};
+          server_filetypes_generator = pkgs.callPackage ./nix/gen_servers.nix {inherit (pkgs.vimPlugins) nvim-lspconfig;};
         };
 
         checks = {
