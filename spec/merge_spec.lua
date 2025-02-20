@@ -67,7 +67,7 @@ describe("lzextras.merge", function()
                 ft = { "go" },
             },
         })
-        merge.trigger()
+        lze.h.merge.trigger()
         assert.same({
             name = "merge_target_2",
             dep_of = { "not_lspconfig" },

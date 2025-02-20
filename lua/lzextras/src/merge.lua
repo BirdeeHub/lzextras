@@ -1,7 +1,13 @@
 ---@type table<string, lzextras.MergePlugin>
 local states = {}
-
----@type lzextras.MergeHandler
+local trigger = function()
+    if states ~= {} then
+        local all = vim.tbl_values(states)
+        states = {}
+        require("lze").load(all)
+    end
+end
+---@type lze.Handler
 return {
     spec_field = "merge",
     set_lazy = false,
@@ -40,10 +46,14 @@ return {
         return { name = plugin.name, enabled = false }
     end,
     trigger = function()
-        if states ~= {} then
-            local all = vim.tbl_values(states)
-            states = {}
-            require("lze").load(all)
-        end
+        vim.notify(
+            "`require('lzextras').merge.trigger` is deprecated, use `require('lze').h.merge.trigger` instead.",
+            vim.log.levels.ERROR,
+            { title = "lzextras.merge" }
+        )
+        return trigger()
     end,
+    lib = {
+        trigger = trigger,
+    },
 }

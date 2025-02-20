@@ -22,7 +22,7 @@
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
 ---@field make_load_with_afters (fun(dirs: string|string[]|fun(afterpath: string, name: string):string[]): fun(names: string|string[]))|(fun(dirs: (string|string[]|fun(afterpath: string, name: string):string[]), load: fun(name: string):string|nil): fun(names: string|string[]))
 ---@field lsp lzextras.LspHandler
----@field merge lzextras.MergeHandler
+---@field merge lze.Handler
 
 ---@type lzextras
 ---@diagnostic disable-next-line

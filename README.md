@@ -304,7 +304,7 @@ collects and merges all plugins added with truthy `plugin.merge`
 until triggered to load it into lze's state
 
 can be triggered for a single plugin by explicitly passing `merge = false`
-for a plugin, or by calling `require("lzextras").merge.trigger()`
+for a plugin, or by calling `require("lze").h.merge.trigger()`
 
 In other words, doing the following would not queue it to be triggered yet,
 but rather cause the merge handler to collect and merge them.
@@ -327,7 +327,7 @@ require("lze").load({
 ```
 
 Then, to enter the merged plugin into `lze`,
-you may either use `require("lzextras").merge.trigger()`
+you may either use `require("lze").h.merge.trigger()`
 to finalize all plugins currently collected by the merge handler,
 or you may finalize them individually by passing a spec with `merge = false`
 explicitly like so:
