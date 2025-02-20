@@ -324,7 +324,16 @@ collects and merges all plugins added with truthy `plugin.merge`
 until triggered to load it into lze's state
 
 can be triggered for a single plugin by explicitly passing `merge = false`
-for a plugin, or by calling `require("lze").h.merge.trigger()`
+for a plugin, or by calling `require("lze").h.merge.trigger()`:
+
+```lua
+require("lze").load {
+  "merge_target",
+  merge = false,
+}
+-- OR
+require("lze").h.merge.trigger()
+```
 
 In other words, doing the following would not queue it to be triggered yet,
 but rather cause the merge handler to collect and merge them.
