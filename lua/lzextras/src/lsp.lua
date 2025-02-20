@@ -9,6 +9,7 @@ local event = require("lze.h.event")
 local ft_fallback = function(name)
     return require("lspconfig")[name].config_def.default_config.filetypes or {}
 end
+---@type lze.Handler
 local handler = {
     spec_field = "lsp",
     lib = {

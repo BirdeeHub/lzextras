@@ -1,15 +1,7 @@
 lzextras.MergePlugin : lze                                *lzextras.MergePlugin*
 
 
-lzextras.MergeHandler : lze                              *lzextras.MergeHandler*
-    merge handler must be registered
-    before all other handlers with modify hooks
-
-
 lzextras.LspPlugin : lze                                    *lzextras.LspPlugin*
-
-
-lzextras.LspHandler : lze                                  *lzextras.LspHandler*
 
 
 lzextras.Keymap                                                *lzextras.Keymap*
@@ -24,7 +16,7 @@ lzextras                                                              *lzextras*
         {key2spec}               (fun(mode:string|string[],lhs:string,rhs:string|function,opts:vim.keymap.set.Opts):lze.KeysSpec)
         {keymap}                 (fun(plugin:string|lze.PluginSpec):lzextras.Keymap)
         {make_load_with_afters}  (fun(dirs:string|string[]|fun(afterpath:string,name:string):string[]):fun(names:string|string[])|fun(dirs:string|string[]|fun(afterpath:string,name:string):string[],load:fun(name:string):string|nil):fun(names:string|string[]))
-        {lsp}                    (lzextras.LspHandler)
+        {lsp}                    (lze.Handler)
         {merge}                  (lze.Handler)
 
 
