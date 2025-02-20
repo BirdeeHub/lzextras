@@ -181,6 +181,26 @@ require('lze').load {
 ```
 <!-- markdownlint-enable MD013 -->
 
+The default fallback for getting filetypes calls
+lspconfig for the list of filetypes, but you can change it.
+
+You can get the current fallback function for getting filetypes using:
+
+```lua
+  ---@type fun():(fun(name: string):string[])
+  require('lze').h.lsp.get_ft_fallback()
+```
+
+and you may set the fallback function for getting filetypes using:
+
+```lua
+  ---@type fun(f: fun(name: string):string[])
+  require('lze').h.lsp.set_ft_fallback(your_new_function)
+```
+
+In addition, you may provide a function instead of a list to `lsp.filetypes`
+and it will be the fallback function for that lsp only
+
 ## key2spec
 
 converts the normal `vim.keymap.set` syntax into an item
