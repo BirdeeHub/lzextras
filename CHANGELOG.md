@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/BirdeeHub/lzextras/compare/v0.2.0...v0.2.1) (2025-02-20)
+
+
+### Bug Fixes
+
+* **type_signatures:** some type signatures were wrong ([cc89bef](https://github.com/BirdeeHub/lzextras/commit/cc89bef6fa65b73544f3ea5cbb1a39248e32c4e3))
+
 ## [0.2.0](https://github.com/BirdeeHub/lzextras/compare/v0.1.20...v0.2.0) (2025-02-20)
 
 
