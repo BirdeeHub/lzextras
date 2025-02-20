@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/BirdeeHub/lzextras/compare/v0.1.20...v0.2.0) (2025-02-20)
+
+
+### Features
+
+* **lze.h.merge.trigger:** moved merge handler to use new lze feature ([c00a749](https://github.com/BirdeeHub/lzextras/commit/c00a749bae9993ad5a4536b71effbdc8bbad7ff4))
+
 ## [0.1.20](https://github.com/BirdeeHub/lzextras/compare/v0.1.19...v0.1.20) (2025-02-20)
 
 
