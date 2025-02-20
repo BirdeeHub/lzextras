@@ -4,24 +4,24 @@ vim.g.lze = {
 }
 local lze = require("lze")
 local lsp_handler = require("lzextras").lsp
-local old_ft_fallback = lsp_handler.ft_fallback
 local spy = require("luassert.spy")
+local load_spy = spy.new(function(_)
+    return {}
+end)
 
 describe("lzextras.lsp", function()
+    lze.register_handlers(lsp_handler)
+    local old_fallback = lze.h.lsp.get_ft_fallback()
+    lze.h.lsp.set_ft_fallback(function(name)
+        return load_spy(name)
+    end)
     it("calls fallback function if no filetypes are provided", function()
         local plugin = {
             name = "fallback_foo_ls",
             lsp = {},
         }
-        lze.register_handlers(lsp_handler)
-        lsp_handler.ft_fallback = function(_)
-            return {}
-        end
-        local fallback_spy = spy.on(lsp_handler, "ft_fallback")
         lze.load(plugin)
-        assert.spy(fallback_spy).was.called(1)
-        lsp_handler.ft_fallback = old_ft_fallback
-        lze.remove_handlers("lsp")
+        assert.spy(load_spy).was.called(1)
     end)
     it("calls lsp functions per spec with lsp table", function()
         local lspfun_spy = spy.new(function(_) end)
@@ -41,10 +41,6 @@ describe("lzextras.lsp", function()
                 lsp = {},
             },
         }
-        lze.register_handlers(lsp_handler)
-        lsp_handler.ft_fallback = function(_)
-            return {}
-        end
         lze.load(plugins)
         lze.trigger_load("foo_ls")
         assert.spy(lspfun_spy).was.called(1)
@@ -52,7 +48,7 @@ describe("lzextras.lsp", function()
         assert.spy(lspfun_spy).was.called(2)
         lze.trigger_load("fallback_foo_ls")
         assert.spy(lspfun_spy).was.called(3)
-        lsp_handler.ft_fallback = old_ft_fallback
+        lze.h.lsp.set_ft_fallback(old_fallback)
         lze.remove_handlers("lsp")
     end)
 end)

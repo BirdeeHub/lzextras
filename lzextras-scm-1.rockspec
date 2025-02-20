@@ -12,7 +12,7 @@ dependencies = {
 
 test_dependencies = {
     'lua >= 5.1',
-    'lze',
+    'lze >= 0.8',
 }
 
 source = {

@@ -9,7 +9,7 @@
 ---@field trigger fun()
 
 ---@class lzextras.LspPlugin: lze.Plugin
----@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.ClientConfig
+---@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.ClientConfig|lspconfig.Config
 
 ---@class lzextras.LspHandler: lze.Handler
 ---@field ft_fallback fun(name: string): string[]
