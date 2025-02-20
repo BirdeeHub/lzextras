@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.20](https://github.com/BirdeeHub/lzextras/compare/v0.1.19...v0.1.20) (2025-02-20)
+
+
+### Bug Fixes
+
+* **lsp_ft_fallback:** &lt;- ([4c4164b](https://github.com/BirdeeHub/lzextras/commit/4c4164bf65a5dbcd5841c3a0a9f169f3b3e3c304))
+* **lsp_ft_fallback:** &lt;- ([#25](https://github.com/BirdeeHub/lzextras/issues/25)) ([4c4164b](https://github.com/BirdeeHub/lzextras/commit/4c4164bf65a5dbcd5841c3a0a9f169f3b3e3c304))
+
 ## [0.1.19](https://github.com/BirdeeHub/lzextras/compare/v0.1.18...v0.1.19) (2025-02-14)
 
 
