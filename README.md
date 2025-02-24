@@ -320,6 +320,11 @@ local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plug
 require("lze").register_handlers(require("lzextras").merge)
 ```
 
+> [!WARNING]
+>
+> must be registered before all other handlers with a modify hook
+> such as the lsp handler
+
 collects and merges all plugins added with truthy `plugin.merge`
 until triggered to load it into lze's state
 
