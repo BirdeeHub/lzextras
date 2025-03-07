@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/BirdeeHub/lzextras/compare/v0.2.4...v0.2.5) (2025-03-07)
+
+
+### Performance Improvements
+
+* **lsp:** removed unnecessary deepcopy ([ba4e1ad](https://github.com/BirdeeHub/lzextras/commit/ba4e1ad95f9401581f56860aa975f656c9be429b))
+
 ## [0.2.4](https://github.com/BirdeeHub/lzextras/compare/v0.2.3...v0.2.4) (2025-03-07)
 
 
