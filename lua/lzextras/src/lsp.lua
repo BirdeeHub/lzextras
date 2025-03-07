@@ -7,7 +7,7 @@ local hooks = {}
 local augroup = nil
 local event = require("lze.h.event")
 local ft_fallback = function(name)
-    return require("lspconfig.configs" .. name).default_config.filetypes or {}
+    return require("lspconfig.configs." .. name).default_config.filetypes or {}
 end
 ---@type lze.Handler
 local handler = {
