@@ -112,6 +112,7 @@ handler.post_def = function()
         if ok then
             pending[name] = nil
             if type(val) == "table" then
+                val = vim.deepcopy(val)
                 states[name] = vim.deepcopy(val)
                 for k, ft in ipairs(val) do
                     ---@diagnostic disable-next-line: assign-type-mismatch
