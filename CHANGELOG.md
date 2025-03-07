@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/BirdeeHub/lzextras/compare/v0.2.1...v0.2.2) (2025-03-07)
+
+
+### Performance Improvements
+
+* **lsp:** require lsp config directly ([30707e0](https://github.com/BirdeeHub/lzextras/commit/30707e031032acdd9a650b872ac7cbcd6fc30949))
+
 ## [0.2.1](https://github.com/BirdeeHub/lzextras/compare/v0.2.0...v0.2.1) (2025-02-20)
 
 
