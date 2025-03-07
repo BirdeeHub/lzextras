@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/BirdeeHub/lzextras/compare/v0.2.3...v0.2.4) (2025-03-07)
+
+
+### Bug Fixes
+
+* **lsp:** no longer edits lspconfig ([5774bad](https://github.com/BirdeeHub/lzextras/commit/5774bad0947fd133828e8bbf29afb5280dafd151))
+
 ## [0.2.3](https://github.com/BirdeeHub/lzextras/compare/v0.2.2...v0.2.3) (2025-03-07)
 
 
