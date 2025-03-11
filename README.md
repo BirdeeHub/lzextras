@@ -102,7 +102,6 @@ require('lze').load {
   },
   {
     "mason.nvim",
-    -- dep_of handler ensures we have mason-lspconfig set up before nvim-lspconfig
     on_plugin = { "nvim-lspconfig" },
     load = function(name)
       vim.cmd.packadd(name)
