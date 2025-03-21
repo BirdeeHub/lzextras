@@ -23,12 +23,11 @@ jobs:
       - name: Get Version
         run: echo "LUAROCKS_VERSION=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
       - name: Luarocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v5
+        uses: nvim-neorocks/luarocks-tag-release@v7
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
           version: ${{ env.LUAROCKS_VERSION }}
-          test_interpreters: ""
           license: GPL-2+
           detailed_description: |
             A collection of extensions for BirdeeHub/lze
