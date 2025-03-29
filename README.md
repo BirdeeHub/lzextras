@@ -200,6 +200,57 @@ and you may set the fallback function for getting filetypes using:
 In addition, you may provide a function instead of a list to `lsp.filetypes`
 and it will be the fallback function for that lsp only
 
+## loaders
+
+`lzextras` offers a few alternate load functions that
+you can use instead of the `vim.cmd.packadd`
+function that `lze` uses as the default loading function
+
+```lua
+require('lzextras').loaders
+```
+
+contains the following functions:
+
+```lua
+---Calls `packadd` on `name` and on `name .. "/after"`
+---@type fun(name: string)
+require('lzextras').loaders.with_after
+---calls packadd on a list of names
+---@type fun(names: string|string[])
+require('lzextras').loaders.multi
+---calls packadd on a list of names and their "after" directories
+---@type fun(string|string[])
+require('lzextras').loaders.multi_w_after
+```
+
+Useage:
+
+```lua
+require("lze").load {
+  "cmp-buffer",
+  on_plugin = { "nvim-cmp" },
+  load = require("lzextras").loaders.with_after,
+}
+```
+
+```lua
+require("lze").load {
+  "nvim-treesitter",
+  event = "DeferredUIEnter",
+  dep_of = { "treesj", "otter.nvim", "render-markdown", "neorg" },
+  load = function(name)
+    require("lzextras").loaders.multi {
+      name,
+      "nvim-treesitter-textobjects",
+    }
+  end,
+  after = function (_)
+    -- treesitter config here...
+  end,
+}
+```
+
 ## key2spec
 
 converts the normal `vim.keymap.set` syntax into an item
@@ -245,14 +296,24 @@ keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
 
 ## make_load_with_afters
 
-This is primarily useful for lazily loading nvim-cmp sources,
-as they often rely on the after directory to work
+This is useful for FORCING specific after directories or files
+of plugins to be sourced when `packadd`ing a plugin
 
-`vim.cmd.packadd(plugin_name)` does not load the after directory of plugins
-but we can replace the load function used by our specs!
+> [!WARNING]
+>
+> This function is somewhat complicated and in almost every situation
+> you will be better off using one of the load functions
+> provided by:
 
-You could also use [rtp.nvim](https://github.com/nvim-neorocks/rtp.nvim)
-instead of this function.
+```lua
+require('lzextras').loaders
+--such as
+---@type fun(name: string)
+require('lzextras').loaders.with_after
+-- or
+---@type fun(names: string|string[])
+require('lzextras').loaders.multi_w_after
+```
 
 This function receives the names of directories
 from a plugin's after directory
