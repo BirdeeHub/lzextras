@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/BirdeeHub/lzextras/compare/v0.2.5...v0.3.0) (2025-03-29)
+
+
+### Features
+
+* **loaders:** added 3 replacement load functions that are better than the only current one ([87f37a8](https://github.com/BirdeeHub/lzextras/commit/87f37a83cfbfb7772f039d7d61150c9cd04d5e4a))
+
 ## [0.2.5](https://github.com/BirdeeHub/lzextras/compare/v0.2.4...v0.2.5) (2025-03-07)
 
 
