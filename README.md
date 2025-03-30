@@ -377,6 +377,9 @@ local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plug
 ## merge
 
 ```lua
+-- vim.g.lze = vim.g.lze or {}
+-- vim.g.lze.injects = vim.g.lze.injects or {}
+-- vim.g.lze.injects.merge = true
 require("lze").register_handlers(require("lzextras").merge)
 ```
 
