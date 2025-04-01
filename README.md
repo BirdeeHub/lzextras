@@ -63,6 +63,100 @@ require "paq" {
 </details>
 <!-- markdownlint-restore -->
 
+## loaders
+
+`lzextras` offers a few alternate load functions that
+you can use instead of the `vim.cmd.packadd`
+function that `lze` uses as the default loading function
+
+```lua
+require('lzextras').loaders
+```
+
+contains the following functions:
+
+```lua
+---Calls `packadd` on `name` and on `name .. "/after"`
+---@type fun(name: string)
+require('lzextras').loaders.with_after
+---calls packadd on a list of names
+---@type fun(names: string|string[])
+require('lzextras').loaders.multi
+---calls packadd on a list of names and their "after" directories
+---@type fun(string|string[])
+require('lzextras').loaders.multi_w_after
+```
+
+Useage:
+
+```lua
+require("lze").load {
+  "cmp-buffer",
+  on_plugin = { "nvim-cmp" },
+  load = require("lzextras").loaders.with_after,
+}
+```
+
+```lua
+require("lze").load {
+  "nvim-treesitter",
+  event = "DeferredUIEnter",
+  dep_of = { "treesj", "otter.nvim", "render-markdown", "neorg" },
+  load = function(name)
+    require("lzextras").loaders.multi {
+      name,
+      "nvim-treesitter-textobjects",
+    }
+  end,
+  after = function (_)
+    -- treesitter config here...
+  end,
+}
+```
+
+## key2spec
+
+converts the normal `vim.keymap.set` syntax into an item
+to put in the list of keys in a lze spec
+
+```lua
+require("lze").load {
+    name = plugin_name,
+    keys = {
+        require("lzextras").key2spec(mode, lhs, rhs, opts),
+    },
+}
+```
+
+## keymap
+
+Allows you to add keymap triggers to plugins from outside of their specs,
+after the spec has been added to `lze`. Useful for if you have a lot of keymaps
+that involve plugins but you don't want to rewrite them all.
+
+```lua
+local keymap = require("lzextras").keymap {
+    name = plugin_name,
+    lazy = true,
+}
+
+-- The normal keymap.set syntax
+keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
+
+-- OR
+
+-- if the spec has already been loaded into state
+require("lze").load {
+    name = plugin_name,
+    lazy = true,
+}
+
+local keymap = require("lzextras").keymap(plugin_name)
+
+-- The normal keymap.set syntax
+keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
+```
+
 ## LSP handler
 
 In the `lsp` field you can declare:
@@ -200,180 +294,6 @@ and you may set the fallback function for getting filetypes using:
 In addition, you may provide a function instead of a list to `lsp.filetypes`
 and it will be the fallback function for that lsp only
 
-## loaders
-
-`lzextras` offers a few alternate load functions that
-you can use instead of the `vim.cmd.packadd`
-function that `lze` uses as the default loading function
-
-```lua
-require('lzextras').loaders
-```
-
-contains the following functions:
-
-```lua
----Calls `packadd` on `name` and on `name .. "/after"`
----@type fun(name: string)
-require('lzextras').loaders.with_after
----calls packadd on a list of names
----@type fun(names: string|string[])
-require('lzextras').loaders.multi
----calls packadd on a list of names and their "after" directories
----@type fun(string|string[])
-require('lzextras').loaders.multi_w_after
-```
-
-Useage:
-
-```lua
-require("lze").load {
-  "cmp-buffer",
-  on_plugin = { "nvim-cmp" },
-  load = require("lzextras").loaders.with_after,
-}
-```
-
-```lua
-require("lze").load {
-  "nvim-treesitter",
-  event = "DeferredUIEnter",
-  dep_of = { "treesj", "otter.nvim", "render-markdown", "neorg" },
-  load = function(name)
-    require("lzextras").loaders.multi {
-      name,
-      "nvim-treesitter-textobjects",
-    }
-  end,
-  after = function (_)
-    -- treesitter config here...
-  end,
-}
-```
-
-## key2spec
-
-converts the normal `vim.keymap.set` syntax into an item
-to put in the list of keys in a lze spec
-
-```lua
-require("lze").load {
-    name = plugin_name,
-    keys = {
-        require("lzextras").key2spec(mode, lhs, rhs, opts),
-    },
-}
-```
-
-## keymap
-
-Allows you to add keymap triggers to plugins from outside of their specs,
-after the spec has been added to `lze`. Useful for if you have a lot of keymaps
-that involve plugins but you don't want to rewrite them all.
-
-```lua
-local keymap = require("lzextras").keymap {
-    name = plugin_name,
-    lazy = true,
-}
-
--- The normal keymap.set syntax
-keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
-
--- OR
-
--- if the spec has already been loaded into state
-require("lze").load {
-    name = plugin_name,
-    lazy = true,
-}
-
-local keymap = require("lzextras").keymap(plugin_name)
-
--- The normal keymap.set syntax
-keymap.set("n", "<leader>l", function()end, { desc = "Lazy" })
-```
-
-## make_load_with_afters
-
-This is useful for FORCING specific after directories or files
-of plugins to be sourced when `packadd`ing a plugin
-
-> [!WARNING]
->
-> This function is somewhat complicated and in almost every situation
-> you will be better off using one of the load functions
-> provided by:
-
-```lua
-require('lzextras').loaders
---such as
----@type fun(name: string)
-require('lzextras').loaders.with_after
--- or
----@type fun(names: string|string[])
-require('lzextras').loaders.multi_w_after
-```
-
-This function receives the names of directories
-from a plugin's after directory
-that you wish to source files from.
-
-Will return load function that can take a name, or list of names,
-and will load a plugin and its after directories.
-The function returned is a suitable substitute for the load field of a plugin spec.
-
-e.g. in the following example:
-load_with_after_plugin will load the plugin names it is given,
-along with their `after/plugin` and `after/ftplugin` directories.
-
-<!-- markdownlint-disable MD013 -->
-```lua
-local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin', 'ftplugin', })
-require("lze").load {
-    name = plugin_name,
-    lazy = true,
-    load = load_with_after_plugin,
-}
-require("lze").trigger_load(plugin_name)
-```
-<!-- markdownlint-enable MD013 -->
-
-- signature:
-
-It is a function that returns a customized load function.
-
-<!-- markdownlint-disable MD013 -->
-```lua
----@overload fun(dirs: string[]|string): fun(names: string|string[])
----It also optionally recieves a function that should load a plugin and return its path
----for if the plugin is not on the packpath, or return nil
----to load from the packpath as normal
----@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
-
---- dirs can also be a function that takes the path to the after directory and name of the plugin and returns a list of files to load.
----@overload fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[])
----@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
-```
-
-> [!NOTE]
->
-> If you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim),
-> you should provide the following load function as the second argument for better performance
-> because `nixCats` provides us information that allows us to avoid searching the whole packpath
-
-```lua
-local function faster_get_path(name)
-  local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
-  if path then
-    vim.cmd.packadd(name)
-    return path
-  end
-  return nil -- nil will make it default to normal behavior
-end
-local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin' }, faster_get_path)
-```
-<!-- markdownlint-enable MD013 -->
 ## merge
 
 ```lua
@@ -458,3 +378,84 @@ trigger the merge handler to add it to `lze`.
 
 So be sure to know which plugins
 you allow to be merged and which ones you do not!
+
+## make_load_with_afters
+
+This is useful for FORCING specific after directories or files
+of plugins to be sourced when `packadd`ing a plugin
+
+> [!WARNING]
+>
+> This function is somewhat complicated and in almost every situation
+> you will be better off using one of the load functions
+> provided by:
+
+```lua
+require('lzextras').loaders
+--such as
+---@type fun(name: string)
+require('lzextras').loaders.with_after
+-- or
+---@type fun(names: string|string[])
+require('lzextras').loaders.multi_w_after
+```
+
+This function receives the names of directories
+from a plugin's after directory
+that you wish to source files from.
+
+Will return load function that can take a name, or list of names,
+and will load a plugin and its after directories.
+The function returned is a suitable substitute for the load field of a plugin spec.
+
+e.g. in the following example:
+load_with_after_plugin will load the plugin names it is given,
+along with their `after/plugin` and `after/ftplugin` directories.
+
+<!-- markdownlint-disable MD013 -->
+```lua
+local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin', 'ftplugin', })
+require("lze").load {
+    name = plugin_name,
+    lazy = true,
+    load = load_with_after_plugin,
+}
+require("lze").trigger_load(plugin_name)
+```
+<!-- markdownlint-enable MD013 -->
+
+- signature:
+
+It is a function that returns a customized load function.
+
+<!-- markdownlint-disable MD013 -->
+```lua
+---@overload fun(dirs: string[]|string): fun(names: string|string[])
+---It also optionally recieves a function that should load a plugin and return its path
+---for if the plugin is not on the packpath, or return nil
+---to load from the packpath as normal
+---@overload fun(dirs: string[]|string, load: fun(name: string):string|nil): fun(names: string|string[])
+
+--- dirs can also be a function that takes the path to the after directory and name of the plugin and returns a list of files to load.
+---@overload fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[])
+---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
+```
+
+> [!NOTE]
+>
+> If you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim),
+> you should provide the following load function as the second argument for better performance
+> because `nixCats` provides us information that allows us to avoid searching the whole packpath
+
+```lua
+local function faster_get_path(name)
+  local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
+  if path then
+    vim.cmd.packadd(name)
+    return path
+  end
+  return nil -- nil will make it default to normal behavior
+end
+local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin' }, faster_get_path)
+```
+<!-- markdownlint-enable MD013 -->
