@@ -23,4 +23,19 @@ function M.multi_w_after(names)
     end
 end
 
+---@param name string
+function M.debug_load(name)
+    local prertp = vim.o.runtimepath
+    vim.cmd.packadd(name)
+    if prertp == vim.o.runtimepath then
+        vim.schedule(function()
+            vim.notify(
+                [[lze:Vim:E919: Already loaded, or directory not found in 'packpath': "pack/*/opt/]] .. name .. [["]],
+                vim.log.levels.WARN,
+                { title = "lzextras.debug_load" }
+            )
+        end)
+    end
+end
+
 return M

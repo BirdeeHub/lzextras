@@ -13,20 +13,28 @@ lzextras.Keymap                                                *lzextras.Keymap*
 lzextras.Loaders                                              *lzextras.Loaders*
 
     Fields: ~
-        {with_after}     (fun(name:string))
-        {multi}          (fun(names:string|string[]))
-        {multi_w_after}  (fun(names:string|string[]))
+        {with_after}     (fun(name:string))            calls packadd on both name and name .. "/after"
+                                                       for lazily loading plugins that rely on their after directory being sourced.
+        {multi}          (fun(names:string|string[]))  packadd, but accepts a list.
+        {multi_w_after}  (fun(names:string|string[]))  Same as with_after, but also accepts a list!
+        {debug_load}     (fun(name:string))            For debugging your setup.
+                                                       set vim.g.lze.load = require("lzextras").loaders.debug_load
+                                                       And it will warn if the plugin was not found and added to the runtimepath,
+                                                       even when the plugin was not loaded at startup.
 
 
 lzextras                                                              *lzextras*
 
     Fields: ~
-        {key2spec}               (fun(mode:string|string[],lhs:string,rhs:string|function,opts:vim.keymap.set.Opts):lze.KeysSpec)
-        {keymap}                 (fun(plugin:string|lze.PluginSpec):lzextras.Keymap)
-        {loaders}                (lzextras.Loaders)
-        {make_load_with_afters}  (fun(dirs:string|string[]|fun(afterpath:string,name:string):string[]):fun(names:string|string[])|fun(dirs:string|string[]|fun(afterpath:string,name:string):string[],load:fun(name:string):string|nil):fun(names:string|string[]))
-        {lsp}                    (lze.Handler)
-        {merge}                  (lze.Handler)
+        {key2spec}               (fun(mode:string|string[],lhs:string,rhs:string|function,opts:vim.keymap.set.Opts):lze.KeysSpec)                                                                                                                                    converts the normal vim.keymap.set arguments into a lze.KeysSpec
+        {keymap}                 (fun(plugin:string|lze.PluginSpec):lzextras.Keymap)                                                                                                                                                                                 Returns { set = function(mode, lhs, rhs, opts) }
+                                                                                                                                                                                                                                                                     For adding key triggers to an already registered lze plugin spec
+                                                                                                                                                                                                                                                                     from anywhere in your configuration using the normal keymap syntax
+        {loaders}                (lzextras.Loaders)                                                                                                                                                                                                                  Contains a few useful loading functions to use to replace the default vim.g.lze.load = vim.cmd.packadd
+        {lsp}                    (lze.Handler)                                                                                                                                                                                                                       A handler that allows loading lsps within lze specs
+        {merge}                  (lze.Handler)                                                                                                                                                                                                                       A handler that allows for specs to be merged until you decide to trigger them to be added to lze
+        {make_load_with_afters}  (fun(dirs:string|string[]|fun(afterpath:string,name:string):string[]):fun(names:string|string[])|fun(dirs:string|string[]|fun(afterpath:string,name:string):string[],load:fun(name:string):string|nil):fun(names:string|string[]))  You probably dont need this function and would be better off using one from lzextras.loaders
+                                                                                                                                                                                                                                                                     Allows forcefully loading your choice of after directories of plugins
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:

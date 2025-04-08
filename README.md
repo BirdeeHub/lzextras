@@ -85,6 +85,13 @@ require('lzextras').loaders.multi
 ---calls packadd on a list of names and their "after" directories
 ---@type fun(string|string[])
 require('lzextras').loaders.multi_w_after
+---For debugging your setup.
+---set vim.g.lze.load = require("lzextras").loaders.debug_load
+---And it will warn if the plugin was not found and added to the runtimepath,
+---even when the plugin was not loaded at startup
+---Will only run for specs that do not replace their default load function
+---@type fun(name: string)
+require('lzextras').loaders.debug_load
 ```
 
 Useage:
