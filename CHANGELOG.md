@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/BirdeeHub/lzextras/compare/v0.3.0...v0.4.0) (2025-04-08)
+
+
+### Features
+
+* **loaders:** loaders.debug_load for making sure you got your names right ([ffedd76](https://github.com/BirdeeHub/lzextras/commit/ffedd761c37a9d643742fea463ec608ecee926cb))
+
 ## [0.3.0](https://github.com/BirdeeHub/lzextras/compare/v0.2.5...v0.3.0) (2025-03-29)
 
 
