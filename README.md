@@ -197,7 +197,7 @@ require('lze').load {
     end,
     before = function(plugin)
       vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('nixCats-lsp-attach', { clear = true }),
+        group = vim.api.nvim_create_augroup('my-lsp-attach', { clear = true }),
         callback = function(event)
           -- YOUR_ON_ATTACH -- (vim.lsp.get_client_by_id(event.data.client_id), event.buf)
         end,
