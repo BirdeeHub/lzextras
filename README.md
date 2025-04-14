@@ -189,7 +189,7 @@ require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
     "nvim-lspconfig",
-    for_cat = "general.core",
+    -- on_require is necessary for lspconfig fallback for filetypes
     on_require = { "lspconfig" },
     lsp = function(plugin)
       vim.lsp.config(plugin.name, plugin.lsp or {})
