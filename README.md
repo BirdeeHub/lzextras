@@ -189,18 +189,32 @@ require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
     "nvim-lspconfig",
-    -- the on require handler will be needed if you want to use the
-    -- fallback method of getting filetypes if you don't provide any
+    for_cat = "general.core",
     on_require = { "lspconfig" },
-    -- define a function to run over all type(plugin.lsp) == table
-    -- when their filetype trigger loads them
     lsp = function(plugin)
-      require('lspconfig')[plugin.name].setup(vim.tbl_extend("force",{
-        capabilities = GET_YOUR_SERVER_CAPABILITIES(plugin.name),
-        on_attach = YOUR_ON_ATTACH,
-      }, plugin.lsp or {}))
+      vim.lsp.config(plugin.name, plugin.lsp or {})
+      vim.lsp.enable(plugin.name)
+    end,
+    before = function(plugin)
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('nixCats-lsp-attach', { clear = true }),
+        callback = function(event)
+          -- YOUR_ON_ATTACH -- (vim.lsp.get_client_by_id(event.data.client_id), event.buf)
+        end,
+      })
     end,
   },
+  -- {
+  -- -- BEFORE NVIM 0.11
+  --   "nvim-lspconfig",
+  --   on_require = { "lspconfig" },
+  --   lsp = function(plugin)
+  --     require('lspconfig')[plugin.name].setup(vim.tbl_extend("force",{
+  --       capabilities = GET_YOUR_SERVER_CAPABILITIES(),
+  --       on_attach = YOUR_ON_ATTACH,
+  --     }, plugin.lsp or {}))
+  --   end,
+  -- },
   {
     "mason.nvim",
     on_plugin = { "nvim-lspconfig" },
@@ -246,7 +260,7 @@ require('lze').load {
   {
     "bashls",
     -- can fall back to using lspconfig to find filetypes
-    -- as long as it can be required
+    -- but at a performance cost
     lsp = { },
   },
   {
@@ -300,6 +314,21 @@ and you may set the fallback function for getting filetypes using:
 
 In addition, you may provide a function instead of a list to `lsp.filetypes`
 and it will be the fallback function for that lsp only
+
+> [!TIP]
+>
+> For ensuring maximum performance, you may want to change
+> the filetype fallback function to throw an error instead!
+> This will ensure you provide filetypes for each server!
+
+```lua
+  require('lze').h.lsp.set_ft_fallback(function(name)
+    error("No filetypes provided for " .. name)
+  end)
+  return {
+    -- your specs here
+  }
+```
 
 ## merge
 
