@@ -196,10 +196,17 @@ require('lze').load {
       vim.lsp.enable(plugin.name)
     end,
     before = function(plugin)
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('my-lsp-attach', { clear = true }),
-        callback = function(event)
-          -- YOUR_ON_ATTACH -- (vim.lsp.get_client_by_id(event.data.client_id), event.buf)
+      vim.lsp.config('*', {
+        -- capabilities = capabilities,
+        on_attach = function(client, bufnr)
+          -- Your on_attach function should set buffer-local lsp related settings
+          local nmap = function(keys, func, desc)
+            if desc then desc = 'LSP: ' .. desc end
+            vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+          end
+          nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          -- etc...
         end,
       })
     end,
