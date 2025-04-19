@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/BirdeeHub/lzextras/compare/v0.4.0...v0.4.1) (2025-04-19)
+
+
+### Bug Fixes
+
+* **lsp_ft_fallback:** future-proofed for new and old lspconfig ([4b0e8cf](https://github.com/BirdeeHub/lzextras/commit/4b0e8cfc96f479f671a766a307b5d55105b7d38f))
+
 ## [0.4.0](https://github.com/BirdeeHub/lzextras/compare/v0.3.0...v0.4.0) (2025-04-08)
 
 
