@@ -181,7 +181,14 @@ It auto populates file types from `lspconfig` if you don't include any under `pl
 
 It will make sure all specs with functions load before the specs with tables.
 
-- Example useage:
+The reason this is included, is that calling enable
+on a lot of LSP implementations on startup
+has a fairly reasonable startup time performance impact.
+
+This allows you to only call enable for the configurations
+pertaining to the filetypes you open.
+
+- Example usage:
 
 <!-- markdownlint-disable MD013 -->
 ```lua
@@ -189,8 +196,6 @@ require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
     "nvim-lspconfig",
-    -- on_require is necessary for lspconfig fallback for filetypes
-    on_require = { "lspconfig" },
     lsp = function(plugin)
       vim.lsp.config(plugin.name, plugin.lsp or {})
       vim.lsp.enable(plugin.name)
@@ -303,7 +308,7 @@ require('lze').load {
 <!-- markdownlint-enable MD013 -->
 
 The default fallback for getting filetypes calls
-lspconfig for the list of filetypes, but you can change it.
+`nvim-lspconfig` for the list of filetypes, but you can change it.
 
 You can get the current fallback function for getting filetypes using:
 
@@ -312,7 +317,7 @@ You can get the current fallback function for getting filetypes using:
   require('lze').h.lsp.get_ft_fallback()
 ```
 
-and you may set the fallback function for getting filetypes using:
+And you may set the fallback function for getting filetypes using:
 
 ```lua
   ---@type fun(f: fun(name: string):string[])
@@ -320,7 +325,7 @@ and you may set the fallback function for getting filetypes using:
 ```
 
 In addition, you may provide a function instead of a list to `lsp.filetypes`
-and it will be the fallback function for that lsp only
+and it will be the fallback function for that LSP only
 
 > [!TIP]
 >

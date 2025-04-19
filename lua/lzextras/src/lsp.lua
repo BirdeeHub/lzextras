@@ -6,8 +6,36 @@ local pending = {}
 local hooks = {}
 local augroup = nil
 local event = require("lze.h.event")
+local lspcfg = nil
 local ft_fallback = function(name)
-    return require("lspconfig.configs." .. name).default_config.filetypes or {}
+    if not lspcfg then
+        local matches = vim.api.nvim_get_runtime_file("pack/*/{start,opt}/nvim-lspconfig", false)
+        lspcfg = matches[1] or nil
+    end
+    if not name then
+        return {}
+    elseif not lspcfg then
+        vim.schedule(function()
+            vim.notify_once(
+                "tried to search for filetypes for lsp: '"
+                    .. name
+                    .. "' but failed because nvim-lspconfig was not found",
+                vim.log.levels.WARN,
+                { title = "lzextras.lsp" }
+            )
+        end)
+        return {}
+    else
+        local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
+        if not ok or not cfg then
+            ok, cfg = pcall(dofile, lspcfg .. "/lua/lspconfig/configs/" .. name .. ".lua")
+        end
+        if not ok or type(cfg) ~= "table" then
+            return {}
+        else
+            return cfg.filetypes or {}
+        end
+    end
 end
 ---@type lze.Handler
 local handler = {
