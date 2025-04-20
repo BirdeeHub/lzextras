@@ -15,19 +15,24 @@ local ft_fallback = function(name)
     if not name then
         return {}
     elseif not lspcfg then
-        vim.schedule(function()
-            vim.notify_once(
-                "tried to search for filetypes for lsp: '"
-                    .. name
-                    .. "' but failed because nvim-lspconfig was not found",
-                vim.log.levels.WARN,
-                { title = "lzextras.lsp" }
-            )
-        end)
-        return {}
+        local ok, cfg = pcall(require, "lspconfig.configs." .. name)
+        if not ok then
+            vim.schedule(function()
+                vim.notify_once(
+                    "tried to search for filetypes for lsp: '"
+                        .. name
+                        .. "' but failed because nvim-lspconfig was not found",
+                    vim.log.levels.WARN,
+                    { title = "lzextras.lsp" }
+                )
+            end)
+            return {}
+        else
+            return type(cfg) == "table" and cfg.filetypes or {}
+        end
     else
         local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
-        if not ok or not cfg then
+        if not ok or type(cfg) ~= "table" then
             ok, cfg = pcall(dofile, lspcfg .. "/lua/lspconfig/configs/" .. name .. ".lua")
         end
         if not ok or type(cfg) ~= "table" then
