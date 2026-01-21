@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/BirdeeHub/lzextras/compare/v0.4.2...v0.5.0) (2026-01-21)
+
+
+### Features
+
+* **debug:** lzextras.debug display and show_state ([f255bc8](https://github.com/BirdeeHub/lzextras/commit/f255bc850ff7c008d62973ee039c3d4bcf9ed1fd))
+
 ## [0.4.2](https://github.com/BirdeeHub/lzextras/compare/v0.4.1...v0.4.2) (2025-04-20)
 
 
