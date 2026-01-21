@@ -8,60 +8,29 @@ This repository contains some custom handlers you may register,
 and some utilities you can use to make your life easier,
 (or harder but more exciting, in the case of the merge handler)
 
-## Downloading
+## Installation
 
-via [paq-nvim](https://github.com/savq/paq-nvim):
+This plugin is `lua` only!
 
-```lua
-require "paq" {
-    { "BirdeeHub/lzextras" }
-}
-```
-
+Any way you can add it to your `vim.o.runtimepath` will work!
 <!-- markdownlint-disable -->
-<details>
-  <summary>
-    <b><a href="https://wiki.nixos.org/wiki/Neovim">Nix examples</a></b>
-  </summary>
-
-  - Home Manager:
-
-  ```nix
-  programs.neovim = {
-    enable = true;
-    plugins = with pkgs.vimPlugins [
-      {
-        plugin = lze;
-        config = /*lua*/''
-          -- optional, add extra handlers
-          require("lze").register_handlers(require("lzextras").lsp)
-        '';
-        type = "lua";
-      }
-      lzextras
-    ];
-  };
-  ```
-
-  - Not on nixpkgs-unstable?
-
-  If your neovim is not on the `nixpkgs-unstable` channel,
-  `vimPlugins.lzextras` may not yet be in nixpkgs for you.
-  You may instead get it from this flake!
-  ```nix
-  # in your flake inputs:
-  inputs = {
-    lzextras.url = "github:BirdeeHub/lzextras";
-  };
-  ```
-  Then, pass your config your inputs from your flake,
-  and retrieve `lzextras` with:
-  ```nix
-  inputs.lzextras.packages.${pkgs.system}.default`:
-  ```
-
-</details>
+```lua
+vim.pack.add({
+  'https://github.com/BirdeeHub/lze',
+  'https://github.com/BirdeeHub/lzextras',
+})
+setmetatable(require('lze'), getmetatable(require('lzextras')))
+---@type lzextras | lze
+local lze = require('lze')
+-- register any handlers from lzextras you want
+lze.register_handlers(lze.lsp)
+-- or call functions!
+lze.debug.display(-lze.state)
+-- you can of course still use it directly
+require('lzextras').debug.display(-lze.state)
+```
 <!-- markdownlint-restore -->
+It also lazily loads itself.
 
 ## loaders
 
@@ -529,22 +498,3 @@ It is a function that returns a customized load function.
 ---@overload fun(dirs: fun(afterpath: string, name: string):string[]): fun(names: string|string[])
 ---@overload fun(dirs: fun(afterpath: string, name: string):string[], load: fun(name: string):string|nil): fun(names: string|string[])
 ```
-
-> [!NOTE]
->
-> If you use [nixCats](https://github.com/BirdeeHub/nixCats-nvim),
-> you should provide the following load function as the second argument for better performance
-> because `nixCats` provides us information that allows us to avoid searching the whole packpath
-
-```lua
-local function faster_get_path(name)
-  local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
-  if path then
-    vim.cmd.packadd(name)
-    return path
-  end
-  return nil -- nil will make it default to normal behavior
-end
-local load_with_after_plugin = require('lzextras').make_load_with_afters({ 'plugin' }, faster_get_path)
-```
-<!-- markdownlint-enable MD013 -->
