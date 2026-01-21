@@ -7,6 +7,15 @@
 ---@class lzextras.Keymap
 ---@field set fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts)
 
+---@class lzextras.Debug
+---Sets up a popup window that contains the input.
+---hook runs in that window after creation.
+---if input is a string, filetype defaults to nil
+---if input is not a string, filetype defaults to "lua" and vim.inspect is called on it
+---@field display fun(input, hook: fun(buf: integer, win: integer))
+---Uses display to display the current state of lze
+---@field show_state fun()
+
 ---@class lzextras.Loaders
 ---calls packadd on both name and name .. "/after"
 ---for lazily loading plugins that rely on their after directory being sourced.
@@ -34,6 +43,8 @@
 ---@field lsp lze.Handler
 ---A handler that allows for specs to be merged until you decide to trigger them to be added to lze
 ---@field merge lze.Handler
+---Useful debug display functions
+---@field debug lzextras.Debug
 ---You probably dont need this function and would be better off using one from lzextras.loaders
 ---Allows forcefully loading your choice of after directories of plugins
 ---@field make_load_with_afters (fun(dirs: string|string[]|fun(afterpath: string, name: string):string[]): fun(names: string|string[]))|(fun(dirs: (string|string[]|fun(afterpath: string, name: string):string[]), load: fun(name: string):string|nil): fun(names: string|string[]))

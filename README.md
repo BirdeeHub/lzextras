@@ -121,9 +121,50 @@ require("lze").load {
 }
 ```
 
+## debug
+
+`debug.display` is a general purpose display function
+
+It sets up a popup window that contains the input.
+
+If input is a string, filetype defaults to `nil`.
+
+If it is not, filetype defaults to `lua` and `vim.inspect` is called on it.
+
+The hook argument runs in that window after creation.
+
+It is mostly for use in the `neovim` command line.
+
+```lua
+---@type fun(input, hook: fun(buf: integer, win: integer))
+local display = require("lzextras").debug.display
+display({ "some", "lua", "value")
+display("some string value")
+```
+
+`debug.show_state` uses display to display the current state of `lze`
+
+```lua
+function M.show_state()
+    local splitres = { deferred = {}, loaded = {} }
+    for key, value in pairs(-require("lze").state) do
+        splitres[value and "deferred" or "loaded"][key] = value
+    end
+    M.display(
+        "-- LZE STATE DISPLAY\n\nloaded = "
+            .. vim.inspect(splitres.loaded)
+            .. "\n\ndeferred = "
+            .. vim.inspect(splitres.deferred),
+        function(buf)
+            vim.bo[buf].filetype = "lua"
+        end
+    )
+end
+```
+
 ## key2spec
 
-converts the normal `vim.keymap.set` syntax into an item
+Converts the normal `vim.keymap.set` syntax into an item
 to put in the list of keys in a lze spec
 
 ```lua
