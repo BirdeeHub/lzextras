@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/BirdeeHub/lzextras/compare/v0.5.0...v0.6.0) (2026-01-22)
+
+
+### Features
+
+* **lsp:** now listens to priority for hooks ([#89](https://github.com/BirdeeHub/lzextras/issues/89)) ([04c8ad7](https://github.com/BirdeeHub/lzextras/commit/04c8ad7dcd005d5f579e40bc781fb2193141d345))
+
 ## [0.5.0](https://github.com/BirdeeHub/lzextras/compare/v0.4.2...v0.5.0) (2026-01-21)
 
 
