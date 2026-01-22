@@ -2,45 +2,12 @@
 local states = {}
 ---@type table<string, string[]|fun(name: string):string[]>
 local pending = {}
----@type table<string, fun(plugin: lzextras.LspPlugin)>
+---@type { priority: number, hook: fun(p: lzextras.LspPlugin), name: string }[]
 local hooks = {}
 local augroup = nil
 local event = require("lze.h.event")
-local lspcfg = nil
 local ft_fallback = function(name)
-    if not lspcfg then
-        local matches = vim.api.nvim_get_runtime_file("pack/*/{start,opt}/nvim-lspconfig", false)
-        lspcfg = matches[1] or nil
-    end
-    if not name then
-        return {}
-    elseif not lspcfg then
-        local ok, cfg = pcall(require, "lspconfig.configs." .. name)
-        if not ok then
-            vim.schedule(function()
-                vim.notify_once(
-                    "tried to search for filetypes for lsp: '"
-                        .. name
-                        .. "' but failed because nvim-lspconfig was not found",
-                    vim.log.levels.WARN,
-                    { title = "lzextras.lsp" }
-                )
-            end)
-            return {}
-        else
-            return type(cfg) == "table" and cfg.filetypes or {}
-        end
-    else
-        local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
-        if not ok or type(cfg) ~= "table" then
-            ok, cfg = pcall(dofile, lspcfg .. "/lua/lspconfig/configs/" .. name .. ".lua")
-        end
-        if not ok or type(cfg) ~= "table" then
-            return {}
-        else
-            return cfg.filetypes or {}
-        end
-    end
+    return name and ((vim.lsp.config[name] or {}).filetypes or {}) or {}
 end
 ---@type lze.Handler
 local handler = {
@@ -79,10 +46,25 @@ local handler = {
 }
 ---@param plugin lzextras.LspPlugin
 function handler.modify(plugin)
+    if plugin.enabled == false or (type(plugin.enabled) == "function" and not plugin.enabled()) then
+        return plugin
+    end
     local field = plugin.lsp
     local fieldtype = type(field)
     if fieldtype == "function" then
-        hooks[plugin.name] = field
+        local default_priority = (vim.g.lze or {}).default_priority or 50
+        local pp = plugin.priority or default_priority
+        for i, v in ipairs(hooks) do
+            if (v.priority or default_priority) < pp then
+                table.insert(
+                    hooks,
+                    i,
+                    { priority = plugin.priority or default_priority, hook = plugin.lsp, name = plugin.name }
+                )
+                return plugin
+            end
+        end
+        table.insert(hooks, { priority = plugin.priority or default_priority, hook = plugin.lsp, name = plugin.name })
         return plugin
     elseif fieldtype ~= "table" then
         return plugin
@@ -98,13 +80,21 @@ function handler.modify(plugin)
         oldbefore(p)
     end
     plugin.load = function(name)
-        require("lze").trigger_load(vim.tbl_keys(hooks))
+        local to_load = {}
+        for _, v in ipairs(hooks) do
+            table.insert(to_load, v.name)
+        end
+        require("lze").trigger_load(to_load)
         oldload(name)
     end
     local oldafter = plugin.after or function(_) end
     ---@param p lzextras.LspPlugin
     plugin.after = function(p)
-        for _, f in ipairs(vim.tbl_values(hooks)) do
+        local fns = {}
+        for _, v in ipairs(hooks) do
+            table.insert(fns, v.hook)
+        end
+        for _, f in ipairs(fns) do
             f(p)
         end
         oldafter(p)

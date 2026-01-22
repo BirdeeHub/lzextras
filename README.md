@@ -63,7 +63,7 @@ require('lzextras').loaders.multi_w_after
 require('lzextras').loaders.debug_load
 ```
 
-Useage:
+Usage:
 
 ```lua
 require("lze").load {
@@ -180,6 +180,8 @@ In the `lsp` field you can declare:
 
 - A function to run for all LSP specs,
   that receives the plugin object, (mostly for `lspconfig`)
+  - `priority`, while normally not doing anything for
+    lazy plugins, affects the order these functions are called
 
 OR
 
@@ -205,7 +207,18 @@ pertaining to the filetypes you open.
 require('lze').register_handlers(require('lzextras').lsp)
 require('lze').load {
   {
+    "mason.nvim",
+    -- priority also affects the order the functions are called in.
+    -- make sure this runs before the function from nvim-lspconfig's spec
+    priority = 55,
+    on_plugin = { "nvim-lspconfig" },
+    lsp = function(plugin)
+      vim.cmd.MasonInstall(plugin.name)
+    end,
+  },
+  {
     "nvim-lspconfig",
+    priority = 50,
     lsp = function(plugin)
       vim.lsp.config(plugin.name, plugin.lsp or {})
       vim.lsp.enable(plugin.name)
@@ -224,28 +237,6 @@ require('lze').load {
           -- etc...
         end,
       })
-    end,
-  },
-  -- {
-  -- -- BEFORE NVIM 0.11
-  --   "nvim-lspconfig",
-  --   on_require = { "lspconfig" },
-  --   lsp = function(plugin)
-  --     require('lspconfig')[plugin.name].setup(vim.tbl_extend("force",{
-  --       capabilities = GET_YOUR_SERVER_CAPABILITIES(),
-  --       on_attach = YOUR_ON_ATTACH,
-  --     }, plugin.lsp or {}))
-  --   end,
-  -- },
-  {
-    "mason.nvim",
-    on_plugin = { "nvim-lspconfig" },
-    load = function(name)
-      vim.cmd.packadd(name)
-      vim.cmd.packadd("mason-lspconfig.nvim")
-      require('mason').setup()
-      -- auto install will make it install servers when lspconfig is called on them.
-      require('mason-lspconfig').setup { automatic_installation = true, }
     end,
   },
   {
@@ -281,7 +272,7 @@ require('lze').load {
   },
   {
     "bashls",
-    -- can fall back to using lspconfig to find filetypes
+    -- can fall back to using the regular method to find filetypes
     -- but at a performance cost
     lsp = { },
   },
@@ -318,7 +309,11 @@ require('lze').load {
 <!-- markdownlint-enable MD013 -->
 
 The default fallback for getting filetypes calls
-`nvim-lspconfig` for the list of filetypes, but you can change it.
+the slow thing we are trying to avoid,
+`vim.lsp.configs[name].filetypes`, but you can change it.
+
+This means if you want to see any startup time benefit from this handler,
+you must provide a filetype for the item, and/or redefine this fallback function,
 
 You can get the current fallback function for getting filetypes using:
 
@@ -363,10 +358,10 @@ require("lze").register_handlers(require("lzextras").merge)
 
 > [!WARNING]
 >
-> must be registered before all other handlers with a modify hook
-> such as the lsp handler
+> Must be registered BEFORE all other handlers with a `modify` hook
+> such as the `lsp` handler
 
-collects and merges all plugins added with truthy `plugin.merge`
+Collects and merges all plugins added with truthy `plugin.merge`
 until triggered to load it into lze's state
 
 can be triggered for a single plugin by explicitly passing `merge = false`
