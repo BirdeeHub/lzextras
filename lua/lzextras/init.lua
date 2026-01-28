@@ -39,6 +39,9 @@
 ---@field keymap fun(plugin: string|lze.PluginSpec): lzextras.Keymap
 ---Contains a few useful loading functions to use to replace the default vim.g.lze.load = vim.cmd.packadd
 ---@field loaders lzextras.Loaders
+---A function which takes a module name and returns a list of import specs.
+---The return value is a valid spec you can pass to lze
+---@field mod_dir_to_spec fun(modname: string, filter?: fun(name: string):boolean): lze.SpecImport[]
 ---A handler that allows loading lsps within lze specs
 ---@field lsp lze.Handler
 ---A handler that allows for specs to be merged until you decide to trigger them to be added to lze

@@ -131,6 +131,37 @@ function M.show_state()
 end
 ```
 
+## mod_dir_to_spec
+
+A function which takes a module name and returns a list of import specs
+containing each lua module in the directory corresponding to that module name
+
+The return value is a valid spec you can pass to `lze`.
+
+```lua
+---@type fun(modname: string, filter?: fun(name: string):boolean): lze.SpecImport[]
+local mod_dir_to_spec = require('lzextras').mod_dir_to_spec
+
+--You can filter out certain files by their submodule name
+require('lze').load(mod_dir_to_spec('plugins', function(name) name ~= "init" end))
+
+---or put the result in another import spec like:
+require('lze').load { import = mod_dir_to_spec('plugins') }
+```
+
+This does mean it has to search that directory for files,
+as do other things with this feature.
+
+If you want the absolute fastest startup time,
+you may wish to use this function to simply help you write your configuration.
+
+In your editor, **navigate to a blank line**, and run the following `neovim` command,
+but with the correct module name corresponding to the directory with your `lze` specs:
+
+<!-- markdownlint-disable MD013 -->
+`:.luado return "require('lze').load " .. vim.inspect(require("lzextras").mod_dir_to_spec("plugins"), { newline = "" })`
+<!-- markdownlint-enable MD013 -->
+
 ## key2spec
 
 Converts the normal `vim.keymap.set` syntax into an item
