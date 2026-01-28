@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/BirdeeHub/lzextras/compare/v0.6.0...v0.7.0) (2026-01-28)
+
+
+### Features
+
+* **mod_dir_to_spec:** add mod_dir_to_spec ([4b4db45](https://github.com/BirdeeHub/lzextras/commit/4b4db45326c60fadb6700ec8c157c2cd97198812))
+
 ## [0.6.0](https://github.com/BirdeeHub/lzextras/compare/v0.5.0...v0.6.0) (2026-01-22)
 
 
