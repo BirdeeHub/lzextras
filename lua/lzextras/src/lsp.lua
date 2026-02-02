@@ -1,6 +1,6 @@
 ---@type table<string, string[]>
 local states = {}
----@type table<string, string[]|fun(name: string):string[]>
+---@type table<string, string[]|(fun(name: string):string[])|false|nil>
 local pending = {}
 ---@type { priority: number, hook: fun(p: lzextras.LspPlugin), name: string }[]
 local hooks = {}
@@ -74,7 +74,8 @@ function handler.modify(plugin)
     plugin.before = function(p)
         local maybepending = pending[p.name]
         local state
-        if type(maybepending) == "function" then
+        local pending_type = type(maybepending)
+        if pending_type == "function" then
             local ok, v = pcall(maybepending, p.name)
             if ok then
                 state = v
@@ -87,6 +88,8 @@ function handler.modify(plugin)
                     )
                 end)
             end
+        elseif pending_type == "table" then
+            state = maybepending
         else
             state = states[p.name]
         end
@@ -128,7 +131,7 @@ function handler.modify(plugin)
         pending[plugin.name] = final
         plugin.lsp.filetypes = final
     else
-        pending[plugin.name] = fieldtype == "function" and field or ft_fallback
+        pending[plugin.name] = fieldtype == "function" and field or (ft_fallback or false)
     end
     return plugin
 end
