@@ -72,9 +72,26 @@ function handler.modify(plugin)
     local oldbefore = plugin.before or function(_) end
     ---@param p lzextras.LspPlugin
     plugin.before = function(p)
-        local state = states[p.name] or pending[p.name](p.name)
-        states[p.name] = nil
+        local maybepending = pending[p.name]
+        local state
+        if type(maybepending) == "function" then
+            local ok, v = pcall(maybepending, p.name)
+            if ok then
+                state = v
+            else
+                vim.schedule(function()
+                    vim.notify(
+                        "Error running ft_fallback function:\n" .. tostring(v),
+                        vim.log.levels.WARN,
+                        { title = "lzextras.lsp" }
+                    )
+                end)
+            end
+        else
+            state = states[p.name]
+        end
         pending[p.name] = nil
+        states[p.name] = nil
         p.lsp.filetypes = state
         oldbefore(p)
     end
@@ -124,6 +141,14 @@ handler.post_def = function()
             local ok, ret = pcall(val, name)
             if ok then
                 ftlist = ret
+            else
+                vim.schedule(function()
+                    vim.notify(
+                        "Error running ft_fallback function:\n" .. tostring(ret),
+                        vim.log.levels.WARN,
+                        { title = "lzextras.lsp" }
+                    )
+                end)
             end
         else
             ftlist = type(val) == "table" and val or nil
