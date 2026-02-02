@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/BirdeeHub/lzextras/compare/v0.7.0...v0.7.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **lsp-handler:** allow ft_fallback to return (or be) nil ([#95](https://github.com/BirdeeHub/lzextras/issues/95)) ([fbc9ce6](https://github.com/BirdeeHub/lzextras/commit/fbc9ce6c50dd55fe456a07a86f2025c4d6e0ac3c))
+
 ## [0.7.0](https://github.com/BirdeeHub/lzextras/compare/v0.6.0...v0.7.0) (2026-01-28)
 
 
