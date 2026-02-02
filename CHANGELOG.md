@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/BirdeeHub/lzextras/compare/v0.7.1...v0.7.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* **lsp-handler:** forgot a check from last change ([#97](https://github.com/BirdeeHub/lzextras/issues/97)) ([1effec7](https://github.com/BirdeeHub/lzextras/commit/1effec70abb6ae0f9621474384c0be8382780e1e))
+
 ## [0.7.1](https://github.com/BirdeeHub/lzextras/compare/v0.7.0...v0.7.1) (2026-02-02)
 
 
