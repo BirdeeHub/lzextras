@@ -339,9 +339,11 @@ require('lze').load {
 ```
 <!-- markdownlint-enable MD013 -->
 
-The default fallback for getting filetypes calls
-the slow thing we are trying to avoid,
-`vim.lsp.configs[name].filetypes`, but you can change it.
+The default fallback function for getting filetypes is `nil`.
+
+This means if you do not provide a filetype for them, either directly,
+or by changing the fallback function via `require('lze').h.lsp.set_ft_fallback`,
+then it will load the spec eagerly.
 
 This means if you want to see any startup time benefit from this handler,
 you must provide a filetype for the item, and/or redefine this fallback function,
@@ -349,19 +351,19 @@ you must provide a filetype for the item, and/or redefine this fallback function
 You can get the current fallback function for getting filetypes using:
 
 ```lua
-  ---@type fun():(fun(name: string):string[])
+  ---@type fun():(nil|fun(name: string):string[]?)
   require('lze').h.lsp.get_ft_fallback()
 ```
 
 And you may set the fallback function for getting filetypes using:
 
 ```lua
-  ---@type fun(f: fun(name: string):string[])
+  ---@type fun(f: nil|fun(name: string):string[]?)
   require('lze').h.lsp.set_ft_fallback(your_new_function)
 ```
 
 In addition, you may provide a function instead of a list to `lsp.filetypes`
-and it will be the fallback function for that LSP only
+and it will replace the fallback function for that LSP only
 
 > [!TIP]
 >
