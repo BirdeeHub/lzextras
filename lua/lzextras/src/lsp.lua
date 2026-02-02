@@ -6,18 +6,17 @@ local pending = {}
 local hooks = {}
 local augroup = nil
 local event = require("lze.h.event")
-local ft_fallback = function(name)
-    return name and ((vim.lsp.config[name] or {}).filetypes or {}) or {}
-end
+local trigger_load = require("lze").trigger_load
+local ft_fallback = nil
 ---@type lze.Handler
 local handler = {
     spec_field = "lsp",
     lib = {
-        ---@return fun(name: string):string[]
+        ---@return nil|(fun(name: string):string[]?)
         get_ft_fallback = function()
             return ft_fallback
         end,
-        ---@param f fun(name: string):string[]
+        ---@param f nil|(fun(name: string):string[]?)
         set_ft_fallback = function(f)
             ft_fallback = f
         end,
@@ -118,40 +117,40 @@ function handler.modify(plugin)
 end
 
 handler.post_def = function()
-    for name, ftlist in pairs(pending) do
-        local val = type(ftlist) == "table" and ftlist or nil
-        --luacheck: no unused
-        local ok = false
-        if val then
-            ok = true
-        else
-            local ret
-            ---@diagnostic disable-next-line: param-type-mismatch
-            ok, ret = pcall(ftlist, name)
+    local no_ft = {}
+    for name, val in pairs(pending) do
+        local ftlist = nil
+        if type(val) == "function" then
+            local ok, ret = pcall(val, name)
             if ok then
-                val = ret
+                ftlist = ret
             end
+        else
+            ftlist = type(val) == "table" and val or nil
         end
-        if ok then
-            pending[name] = nil
-            if type(val) == "table" then
-                states[name] = val
-                val = vim.deepcopy(val)
-                for k, ft in ipairs(val) do
-                    ---@diagnostic disable-next-line: assign-type-mismatch
-                    val[k] = {
-                        id = ft,
-                        event = "FileType",
-                        pattern = ft,
-                        augroup = augroup,
-                    }
-                end
-                local p = { name = name, event = val }
-                event.add(p)
-            else
-                states[name] = val
+        pending[name] = nil
+        if type(ftlist) == "table" then
+            states[name] = ftlist
+            ftlist = vim.deepcopy(ftlist)
+            for k, ft in ipairs(ftlist) do
+                ---@diagnostic disable-next-line: assign-type-mismatch
+                ftlist[k] = {
+                    id = ft,
+                    event = "FileType",
+                    pattern = ft,
+                    augroup = augroup,
+                }
             end
+            local p = { name = name, event = ftlist }
+            event.add(p)
+        else
+            table.insert(no_ft, name)
         end
+    end
+    if next(no_ft) then
+        vim.schedule(function()
+            trigger_load(no_ft)
+        end)
     end
 end
 return handler
