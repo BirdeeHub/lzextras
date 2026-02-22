@@ -156,7 +156,8 @@ If you want the absolute fastest startup time,
 you may wish to use this function to simply help you write your configuration.
 
 In your editor, **navigate to a blank line**, and run the following `neovim` command,
-but with the correct module name corresponding to the directory with your `lze` specs:
+but with the correct module name corresponding
+to the directory with your `lze` specs:
 
 <!-- markdownlint-disable MD013 -->
 `:.luado return "require('lze').load " .. vim.inspect(require("lzextras").mod_dir_to_spec("plugins"), { newline = "" })`
@@ -444,7 +445,8 @@ require("lze").load({
 })
 ```
 
-the resulting plugin `merge_target` from these examples entered into state will be:
+The resulting plugin `merge_target` from
+these examples entered into state will be:
 
 ```lua
 {
