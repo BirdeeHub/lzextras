@@ -5,8 +5,8 @@ local pending = {}
 ---@type { priority: number, hook: fun(p: lzextras.LspPlugin), name: string }[]
 local hooks = {}
 local augroup = nil
-local event = require("lze.h.event")
-local trigger_load = require("lze").trigger_load
+---@type lze.Handler
+local event = nil
 local ft_fallback = nil
 ---@type lze.Handler
 local handler = {
@@ -22,6 +22,7 @@ local handler = {
         end,
     },
     init = function()
+        event = require("lze.h.event")
         augroup = vim.api.nvim_create_augroup("lzextras_handler_lsp", { clear = true })
     end,
     cleanup = function()
@@ -45,6 +46,7 @@ local handler = {
 }
 ---@param plugin lzextras.LspPlugin
 function handler.modify(plugin)
+    local trigger_load = require("lze").trigger_load
     if plugin.enabled == false or (type(plugin.enabled) == "function" and not plugin.enabled()) then
         return plugin
     end
@@ -103,7 +105,7 @@ function handler.modify(plugin)
         for _, v in ipairs(hooks) do
             table.insert(to_load, v.name)
         end
-        require("lze").trigger_load(to_load)
+        trigger_load(to_load)
         oldload(name)
     end
     local oldafter = plugin.after or function(_) end
@@ -137,6 +139,7 @@ function handler.modify(plugin)
 end
 
 handler.post_def = function()
+    local trigger_load = require("lze").trigger_load
     local no_ft = {}
     for name, val in pairs(pending) do
         local ftlist = nil

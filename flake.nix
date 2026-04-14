@@ -11,181 +11,192 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     lze = {
       url = "github:BirdeeHub/lze";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-      inputs.neorocks.follows = "neorocks";
+      inputs.neovim-nightly-overlay.follows = "neovim-nightly-overlay";
       inputs.gen-luarc.follows = "gen-luarc";
     };
-
-    flake-parts.url = "github:hercules-ci/flake-parts";
-
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-    };
-
-    neorocks.url = "github:nvim-neorocks/neorocks";
-
-    gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
-    flake-parts,
     pre-commit-hooks,
-    neorocks,
     gen-luarc,
-    lze,
     ...
   }: let
     name = "lzextras";
-
-    pkg-overlay = import ./nix/pkg-overlay.nix {
-      inherit name self;
+    perSystem = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all;
+    mk-luarc = pkgs:
+      pkgs.mk-luarc {plugins = [pkgs.vimPlugins.lze];};
+    testshook = pkgs: {
+      enable = true;
+      name = "run-${name}-tests";
+      entry = "${pkgs.writeShellScript "run-${name}-tests" ''
+        set -e
+        export HOME="$(mktemp -d)"
+        gitroot="$(git rev-parse --show-toplevel)"
+        if [ -z "$gitroot" ]; then
+          echo "Error: Unable to determine Git root."
+          exit 1
+        fi
+        ${pkgs.lib.getExe pkgs.neovim-unwrapped} --headless --cmd "set rtp^=${pkgs.vimPlugins.lze} | luafile $gitroot/test.nvim" +qall!
+      ''}";
     };
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      perSystem = {
-        config,
-        self',
-        inputs',
-        system,
-        ...
-      }: let
-        ci-overlay = import ./nix/ci-overlay.nix {
-          inherit self;
-          plugin-name = name;
+    pre-commit-check = pkgs: luarc:
+      pre-commit-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
+        src = self;
+        hooks = {
+          alejandra.enable = true;
+          stylua.enable = true;
+          luacheck = {
+            enable = true;
+          };
+          lua-ls = {
+            enable = true;
+            settings.configuration = luarc;
+          };
+          editorconfig-checker.enable = true;
+          markdownlint = {
+            enable = true;
+            settings.configuration = {
+              MD028 = false;
+              MD060 = false;
+            };
+            excludes = [
+              "CHANGELOG.md"
+            ];
+          };
+          lemmy-docgen = let
+            lemmyscript = pkgs.writeShellScript "lemmy-helper" ''
+              gitroot="$(${pkgs.git}/bin/git rev-parse --show-toplevel)"
+              if [ -z "$gitroot" ]; then
+                echo "Error: Unable to determine Git root."
+                exit 1
+              fi
+              DOCOUT="$(realpath "$gitroot/doc/${name}.txt")"
+              luamain="$(realpath "$gitroot/lua/${name}/init.lua")"
+              mkdir -p "$(dirname "$DOCOUT")"
+              ${pkgs.lemmy-help}/bin/lemmy-help "$luamain" > "$DOCOUT"
+            '';
+          in {
+            enable = true;
+            name = "lemmy-docgen";
+            entry = "${lemmyscript}";
+          };
+          run-tests = testshook pkgs;
         };
+      };
+  in {
+    overlays.default = final: prev: let
+      packageOverrides = luaself: luaprev: {
+        ${name} = luaself.callPackage (
+          {buildLuarocksPackage}:
+            buildLuarocksPackage {
+              pname = name;
+              version = "scm-1";
+              knownRockspec = "${self}/${name}-scm-1.rockspec";
+              src = self;
+              checkPhase = ''
+                runHook preInstallCheck
+                export HOME=$(mktemp -d)
+                ${final.lib.getExe final.neovim-unwrapped} --headless --cmd "set rtp^=${final.vimPlugins.lze} | luafile $src/test.nvim" +qall!
+                runHook postInstallCheck
+              '';
+            }
+        ) {};
+      };
 
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            lze.overlays.default
-            gen-luarc.overlays.default
-            neorocks.overlays.default
-            ci-overlay
-            pkg-overlay
-          ];
-        };
+      lua5_1 = prev.lua5_1.override {
+        inherit packageOverrides;
+      };
+      lua51Packages = final.lua5_1.pkgs;
 
-        luarc = pkgs.mk-luarc {
-          nvim = pkgs.neovim-nightly;
-          plugins = [pkgs.vimPlugins.lze pkgs.vimPlugins.nvim-lspconfig];
+      vimPlugins =
+        prev.vimPlugins
+        // {
+          ${name} = final.neovimUtils.buildNeovimPlugin {
+            pname = name;
+            version = "dev";
+            src = self;
+          };
         };
-        luarccurrent = pkgs.mk-luarc {
-          nvim = pkgs.neovim;
-          plugins = [pkgs.vimPlugins.lze pkgs.vimPlugins.nvim-lspconfig];
-        };
+    in {
+      inherit
+        lua5_1
+        lua51Packages
+        vimPlugins
+        ;
+    };
 
+    devShells = perSystem (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+          gen-luarc.overlays.default
+          inputs.lze.overlays.default
+          self.overlays.default
+        ];
+        luarc = mk-luarc pkgs;
+      in rec {
+        default = pkgs.mkShell {
+          name = "${name} devShell";
+          DEVSHELL = 0;
+          shellHook = ''
+            ${(pre-commit-check pkgs luarc).shellHook}
+            ln -fs ${pkgs.luarc-to-json luarc} .luarc.json
+          '';
+          buildInputs =
+            self.checks.${system}.pre-commit-check.enabledPackages
+            ++ (with pkgs; [
+              lua-language-server
+            ]);
+        };
+        devShell = default;
+      }
+    );
+
+    packages = perSystem (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+          self.overlays.default
+        ];
+      in {
+        default = self.packages.${system}."${name}-vimPlugin";
+        "${name}-luaPackage" = pkgs.lua51Packages.${name};
+        "${name}-vimPlugin" = pkgs.vimPlugins.${name};
+      }
+    );
+
+    checks = perSystem (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+          gen-luarc.overlays.default
+          self.overlays.default
+          inputs.lze.overlays.default
+        ];
+        nightlypkgs = pkgs.appendOverlays [inputs.neovim-nightly-overlay.overlays.default];
+      in {
+        pre-commit-check = pre-commit-check pkgs (mk-luarc pkgs);
+        vimPlugins = pkgs.vimPlugins.${name}.overrideAttrs {doCheck = true;};
+        luaPackage = pkgs.lua51Packages.${name}.overrideAttrs {doCheck = true;};
+        vimPlugins-nigtly = nightlypkgs.vimPlugins.${name}.overrideAttrs {doCheck = true;};
+        luaPackage-nigtly = nightlypkgs.lua51Packages.${name}.overrideAttrs {doCheck = true;};
         type-check-nightly = pre-commit-hooks.lib.${system}.run {
           src = self;
           hooks = {
             lua-ls = {
               enable = true;
-              settings.configuration = luarc;
+              settings.configuration = mk-luarc nightlypkgs;
             };
+            run-tests = testshook pkgs;
           };
         };
-
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
-          src = self;
-          hooks = {
-            alejandra.enable = true;
-            stylua.enable = true;
-            luacheck = {
-              enable = true;
-            };
-            lua-ls = {
-              enable = true;
-              settings.configuration = luarccurrent;
-            };
-            editorconfig-checker.enable = true;
-            markdownlint = {
-              enable = true;
-              excludes = [
-                "CHANGELOG.md"
-              ];
-            };
-            lemmy-docgen = let
-              lemmyscript = pkgs.writeShellScript "lemmy-helper" ''
-                gitroot="$(${pkgs.git}/bin/git rev-parse --show-toplevel)"
-                if [ -z "$gitroot" ]; then
-                  echo "Error: Unable to determine Git root."
-                  exit 1
-                fi
-                DOCOUT="$(realpath "$gitroot/doc/lzextras.txt")"
-                luamain="$(realpath "$gitroot/lua/lzextras/init.lua")"
-                mkdir -p "$(dirname "$DOCOUT")"
-                ${pkgs.lemmy-help}/bin/lemmy-help "$luamain" > "$DOCOUT"
-              '';
-            in {
-              enable = true;
-              name = "lemmy-docgen";
-              entry = "${lemmyscript}";
-            };
-          };
-        };
-
-        devShell = let
-          test_lpath =
-            pkgs.lib.pipe [
-              pkgs.vimPlugins.lze
-              pkgs.vimPlugins.nvim-lspconfig
-            ] [
-              (map (v: "${v}/lua/?.lua;${v}/lua/?/init.lua"))
-              (builtins.concatStringsSep ";")
-            ];
-        in
-          pkgs.mkShell {
-            name = "lzextras devShell";
-            DEVSHELL = 0;
-            shellHook = ''
-              ${pre-commit-check.shellHook}
-              ln -fs ${pkgs.luarc-to-json luarc} .luarc.json
-              export TEST_LPATH="${test_lpath}"
-            '';
-            buildInputs =
-              self.checks.${system}.pre-commit-check.enabledPackages
-              ++ (with pkgs; [
-                lua-language-server
-                busted-nlua
-              ]);
-          };
-      in {
-        devShells = {
-          default = devShell;
-          inherit devShell;
-        };
-
-        packages = rec {
-          default = lzextras-vimPlugin;
-          lzextras-luaPackage = pkgs.lua51Packages.${name};
-          lzextras-vimPlugin = pkgs.vimPlugins.${name};
-          server_filetypes_generator = pkgs.callPackage ./nix/gen_servers.nix {inherit (pkgs.vimPlugins) nvim-lspconfig;};
-        };
-
-        checks = {
-          inherit
-            pre-commit-check
-            type-check-nightly
-            ;
-          inherit
-            (pkgs)
-            nvim-nightly-tests
-            ;
-        };
-      };
-      flake = {
-        overlays.default = pkg-overlay;
-      };
-    };
+      }
+    );
+  };
 }

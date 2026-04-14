@@ -2,7 +2,7 @@
 ---@field merge? boolean
 
 ---@class lzextras.LspPlugin: lze.Plugin
----@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.ClientConfig|lspconfig.Config
+---@field lsp? fun(plugin: lzextras.LspPlugin)|vim.lsp.Config
 
 ---@class lzextras.Keymap
 ---@field set fun(mode:string|string[], lhs:string, rhs:string|function, opts:vim.keymap.set.Opts)
