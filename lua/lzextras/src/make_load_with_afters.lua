@@ -5,7 +5,9 @@
 return function(dirs, load)
     dirs = ((type(dirs) == "table" or type(dirs) == "function") and dirs) or { dirs }
     local fromPackpath = function(name)
+        ---@diagnostic disable-next-line: param-type-mismatch
         for _, packpath in ipairs(vim.opt.packpath:get()) do
+            ---@cast packpath string
             local plugin_path = vim.fn.globpath(packpath, "pack/*/opt/" .. name, nil, true, true)
             if plugin_path[1] then
                 return plugin_path[1]
